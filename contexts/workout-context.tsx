@@ -1,6 +1,9 @@
 import { Exercise, ExerciseSet, Workout } from "@/types/workout";
 import React, { createContext, useCallback, useContext, useState } from "react";
 
+let _nextId = 0;
+const generateId = () => `${Date.now()}-${++_nextId}`;
+
 interface WorkoutContextType {
   workouts: Workout[];
   addWorkout: (name: string) => Workout;
@@ -31,7 +34,7 @@ export function WorkoutProvider({ children }: { children: React.ReactNode }) {
 
   const addWorkout = useCallback((name: string): Workout => {
     const newWorkout: Workout = {
-      id: Date.now().toString(),
+      id: generateId(),
       name,
       exercises: [],
       createdAt: new Date(),
@@ -55,7 +58,7 @@ export function WorkoutProvider({ children }: { children: React.ReactNode }) {
   const addExerciseToWorkout = useCallback(
     (workoutId: string, exerciseName: string) => {
       const newExercise: Exercise = {
-        id: Date.now().toString(),
+        id: generateId(),
         name: exerciseName,
         sets: [],
       };
@@ -111,7 +114,7 @@ export function WorkoutProvider({ children }: { children: React.ReactNode }) {
   const addSetToExercise = useCallback(
     (workoutId: string, exerciseId: string) => {
       const newSet: ExerciseSet = {
-        id: Date.now().toString(),
+        id: generateId(),
         reps: 0,
       };
       setWorkouts((prev) =>
