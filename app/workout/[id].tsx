@@ -7,7 +7,8 @@ import { Exercise } from '@/types/workout';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, TextInput, View } from 'react-native';
+import { Input, InputField } from '@/components/ui/input';
+import { Alert, Pressable, ScrollView, View } from 'react-native';
 
 const PRIMARY_COLOR = '#0a7ea4';
 
@@ -98,47 +99,44 @@ export default function WorkoutDetailScreen() {
       <View className="mb-3 gap-3">
         <View className="flex-row items-center gap-3">
           <Text className="w-24 text-sm font-semibold opacity-70">Sets</Text>
-          <TextInput
-            className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
-            style={{ borderColor: PRIMARY_COLOR }}
-            value={exercise.numberOfSets?.toString()}
-            onChangeText={(value) =>
-              handleUpdateExerciseField(exercise.id, 'numberOfSets', value)
-            }
-            keyboardType="numeric"
-            placeholder="1"
-            placeholderTextColor={textColor + '60'}
-          />
+          <Input className="flex-1">
+            <InputField
+              value={exercise.numberOfSets?.toString()}
+              onChangeText={(value: string) =>
+                handleUpdateExerciseField(exercise.id, 'numberOfSets', value)
+              }
+              keyboardType="numeric"
+              placeholder="1"
+            />
+          </Input>
         </View>
         <View className="flex-row items-center gap-3">
           <Text className="w-24 text-sm font-semibold opacity-70">Reps</Text>
-          <TextInput
-            className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
-            style={{ borderColor: PRIMARY_COLOR }}
-            value={exercise.reps.toString()}
-            onChangeText={(value) =>
-              handleUpdateExerciseField(exercise.id, 'reps', value)
-            }
-            keyboardType="numeric"
-            placeholder="0"
-            placeholderTextColor={textColor + '60'}
-          />
+          <Input className="flex-1">
+            <InputField
+              value={exercise.reps.toString()}
+              onChangeText={(value: string) =>
+                handleUpdateExerciseField(exercise.id, 'reps', value)
+              }
+              keyboardType="numeric"
+              placeholder="0"
+            />
+          </Input>
         </View>
         <View className="flex-row items-center gap-3">
           <Text className="w-24 text-sm font-semibold opacity-70">
             Weight (kg)
           </Text>
-          <TextInput
-            className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
-            style={{ borderColor: PRIMARY_COLOR }}
-            value={exercise.weight?.toString() ?? ''}
-            onChangeText={(value) =>
-              handleUpdateExerciseField(exercise.id, 'weight', value)
-            }
-            keyboardType="numeric"
-            placeholder="Optional"
-            placeholderTextColor={textColor + '60'}
-          />
+          <Input className="flex-1">
+            <InputField
+              value={exercise.weight?.toString() ?? ''}
+              onChangeText={(value: string) =>
+                handleUpdateExerciseField(exercise.id, 'weight', value)
+              }
+              keyboardType="numeric"
+              placeholder="Optional"
+            />
+          </Input>
         </View>
       </View>
     </View>
@@ -169,16 +167,15 @@ export default function WorkoutDetailScreen() {
               className="mb-4 rounded-xl border-2 p-4"
               style={{ borderColor: PRIMARY_COLOR }}
             >
-              <TextInput
-                className="mb-3 rounded-lg border p-3 text-base text-[#11181C] dark:text-[#ECEDEE]"
-                style={{ borderColor: PRIMARY_COLOR }}
-                placeholder="Exercise name (e.g., Bench Press)"
-                placeholderTextColor={textColor + '80'}
-                value={newExerciseName}
-                onChangeText={setNewExerciseName}
-                autoFocus
-                onSubmitEditing={handleAddExercise}
-              />
+              <Input className="mb-3">
+                <InputField
+                  placeholder="Exercise name (e.g., Bench Press)"
+                  value={newExerciseName}
+                  onChangeText={setNewExerciseName}
+                  autoFocus
+                  onSubmitEditing={handleAddExercise}
+                />
+              </Input>
               <View className="flex-row gap-3">
                 <Pressable
                   className="flex-1 items-center rounded-lg border p-3"

@@ -8,7 +8,8 @@ import { Workout } from '@/types/workout';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, FlatList, Pressable, TextInput, View } from 'react-native';
+import { Input, InputField } from '@/components/ui/input';
+import { Alert, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function WorkoutsScreen() {
@@ -72,16 +73,15 @@ export default function WorkoutsScreen() {
             className="mb-5 rounded-xl border-2 p-4"
             style={{ borderColor: primaryColor }}
           >
-            <TextInput
-              className="mb-3 rounded-lg border p-3 text-base"
-              style={{ borderColor: primaryColor }}
-              placeholder="Workout name"
-              placeholderTextColor={textColor + '80'}
-              value={newWorkoutName}
-              onChangeText={setNewWorkoutName}
-              autoFocus
-              onSubmitEditing={handleCreateWorkout}
-            />
+            <Input className="mb-3">
+              <InputField
+                placeholder="Workout name"
+                value={newWorkoutName}
+                onChangeText={setNewWorkoutName}
+                autoFocus
+                onSubmitEditing={handleCreateWorkout}
+              />
+            </Input>
             <View className="flex-row gap-3">
               <Pressable
                 className="flex-1 items-center rounded-lg border p-3"
