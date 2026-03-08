@@ -1,27 +1,21 @@
 import { act, renderHook } from '@testing-library/react-native';
-import React from 'react';
 
-import { WorkoutProvider, useWorkouts } from '@/contexts/WorkoutContext';
+import { useWorkouts } from '@/contexts/WorkoutContext';
+import { useWorkoutStore } from '@/store/workoutStore';
 
-function wrapper({ children }: { children: React.ReactNode }) {
-  return <WorkoutProvider>{children}</WorkoutProvider>;
-}
+beforeEach(() => {
+  useWorkoutStore.setState({ workouts: [], isLoaded: false });
+});
 
 describe('useWorkouts', () => {
-  it('throws when used outside of WorkoutProvider', () => {
-    expect(() => renderHook(() => useWorkouts())).toThrow(
-      'useWorkouts must be used within a WorkoutProvider',
-    );
-  });
-
   it('starts with an empty workout list', () => {
-    const { result } = renderHook(() => useWorkouts(), { wrapper });
+    const { result } = renderHook(() => useWorkouts());
     expect(result.current.workouts).toEqual([]);
   });
 
   describe('addWorkout', () => {
     it('adds a workout and returns it', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let workout: ReturnType<typeof result.current.addWorkout>;
       act(() => {
@@ -37,7 +31,7 @@ describe('useWorkouts', () => {
     });
 
     it('adds multiple workouts', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       act(() => {
         result.current.addWorkout('Push Day');
@@ -52,7 +46,7 @@ describe('useWorkouts', () => {
 
   describe('updateWorkout', () => {
     it('updates a workout by id', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let id: string;
       act(() => {
@@ -66,7 +60,7 @@ describe('useWorkouts', () => {
     });
 
     it('does not affect other workouts', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let id1: string;
       act(() => {
@@ -84,7 +78,7 @@ describe('useWorkouts', () => {
 
   describe('deleteWorkout', () => {
     it('removes a workout by id', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let id: string;
       act(() => {
@@ -98,7 +92,7 @@ describe('useWorkouts', () => {
     });
 
     it('only removes the targeted workout', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let id1: string;
       act(() => {
@@ -116,7 +110,7 @@ describe('useWorkouts', () => {
 
   describe('getWorkoutById', () => {
     it('returns the workout with the given id', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let id: string;
       act(() => {
@@ -128,7 +122,7 @@ describe('useWorkouts', () => {
     });
 
     it('returns undefined for an unknown id', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       expect(result.current.getWorkoutById('nonexistent')).toBeUndefined();
     });
@@ -136,7 +130,7 @@ describe('useWorkouts', () => {
 
   describe('addExerciseToWorkout', () => {
     it('adds an exercise to the specified workout', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let id: string;
       act(() => {
@@ -155,7 +149,7 @@ describe('useWorkouts', () => {
 
   describe('updateExercise', () => {
     it('updates an exercise name', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let workoutId: string;
       let exerciseId: string;
@@ -177,7 +171,7 @@ describe('useWorkouts', () => {
 
   describe('deleteExercise', () => {
     it('removes an exercise from a workout', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let workoutId: string;
       let exerciseId: string;
@@ -198,7 +192,7 @@ describe('useWorkouts', () => {
 
   describe('addSetToExercise', () => {
     it('adds a set with reps=0 to an exercise', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let workoutId: string;
       let exerciseId: string;
@@ -220,7 +214,7 @@ describe('useWorkouts', () => {
 
   describe('updateSet', () => {
     it('updates reps and weight on a set', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let workoutId: string;
       let exerciseId: string;
@@ -251,7 +245,7 @@ describe('useWorkouts', () => {
 
   describe('deleteSet', () => {
     it('removes a set from an exercise', () => {
-      const { result } = renderHook(() => useWorkouts(), { wrapper });
+      const { result } = renderHook(() => useWorkouts());
 
       let workoutId: string;
       let exerciseId: string;
