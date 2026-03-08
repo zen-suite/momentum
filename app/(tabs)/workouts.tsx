@@ -1,10 +1,10 @@
 import { ThemedView } from '@/components/ThemedView';
 import { WorkoutCard } from '@/components/WorkoutCard';
 import { Heading } from '@/components/ui/heading';
-import { Workout } from '@/types/workout';
 import { Text } from '@/components/ui/text';
 import { useWorkouts } from '@/contexts/WorkoutContext';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { Workout } from '@/types/workout';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -123,7 +123,9 @@ export default function WorkoutsScreen() {
             data={workouts}
             renderItem={renderWorkoutItem}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ gap: 12 }}
+            contentContainerStyle={{
+              gap: 12,
+            }}
             showsVerticalScrollIndicator={false}
           />
         )}
