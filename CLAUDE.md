@@ -118,3 +118,5 @@ Use `useThemeColor` from `@/hooks/useThemeColor` to resolve colors. Use `Colors`
 - Keep components small and focused on a single responsibility.
 - Always follow existing codebase conventions.
 - Alway write unit tests for new components/logic you implemented.
+- Never use `any` in typescript
+- After implementing any request that changes code, always run `npm run test` and fix failed tests
