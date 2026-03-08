@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react-native';
 import React from 'react';
 
-import { ThemedText } from '@/components/themed-text';
+import { ThemedText } from '@/components/ThemedText';
 
 // Provide a stable color scheme so tests don't depend on the system setting
 jest.mock('@/hooks/use-color-scheme', () => ({

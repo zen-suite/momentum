@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-native';
 import React from 'react';
 
-import { WorkoutProvider, useWorkouts } from '@/contexts/workout-context';
+import { WorkoutProvider, useWorkouts } from '@/contexts/WorkoutContext';
 
 function wrapper({ children }: { children: React.ReactNode }) {
   return <WorkoutProvider>{children}</WorkoutProvider>;

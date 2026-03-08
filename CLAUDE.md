@@ -73,14 +73,18 @@ Use `StyleSheet.create` for all styles. No inline style objects except for dynam
 
 ## Theming
 
-Use `useThemeColor` from `@/hooks/use-theme-color` to resolve colors. Use `Colors` and `Fonts` from `@/constants/theme`.
+Use `useThemeColor` from `@/hooks/useThemeColor` to resolve colors. Use `Colors` and `Fonts` from `@/constants/theme`.
 
 ## File naming
 
-kebab-case for all files: `workout-card.tsx`, `use-workout-list.ts`.
+- Components and contexts: PascalCase — `WorkoutCard.tsx`, `WorkoutContext.tsx`
+- Hooks: camelCase — `useThemeColor.ts`, `useWorkouts.ts`
+- Types: kebab-case
+- App route files follow Expo Router conventions (`_layout.tsx`, `[id].tsx`)
 
 ## General
 
 - No external documentation files unless explicitly requested.
 - Keep components small and focused on a single responsibility.
-- Prefer editing existing files over creating new ones.
+- Always follow existing codebase conventions.
+- Alway write unit tests for new components/logic you implemented.
