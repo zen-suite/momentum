@@ -1,14 +1,20 @@
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import React from 'react';
 
-import { WorkoutProvider } from '@/contexts/WorkoutContext';
-
 jest.mock('@/hooks/useColorScheme', () => ({
   useColorScheme: () => 'light',
 }));
 
+const mockNavigate = jest.fn();
+const mockPush = jest.fn();
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({ navigate: mockNavigate, push: mockPush }),
+}));
+
+const mockWorkouts: { id: string; name: string; exercises: never[]; createdAt: Date }[] = [];
+jest.mock('@/contexts/WorkoutContext', () => ({
+  useWorkouts: () => ({ workouts: mockWorkouts }),
+  WorkoutProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
 // Import after mocks
@@ -16,14 +22,16 @@ jest.mock('expo-router', () => ({
 const HomeScreen = require('@/app/(tabs)/index').default;
 
 function renderHome() {
-  return render(
-    <WorkoutProvider>
-      <HomeScreen />
-    </WorkoutProvider>,
-  );
+  return render(<HomeScreen />);
 }
 
 describe('HomeScreen', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+    mockPush.mockClear();
+    mockWorkouts.length = 0;
+  });
+
   describe('empty state', () => {
     it('shows get started heading when no workouts', () => {
       renderHome();
@@ -40,59 +48,37 @@ describe('HomeScreen', () => {
       expect(screen.getByText('Add Workout')).toBeTruthy();
     });
 
-    it('shows inline input form when CTA is pressed', () => {
+    it('navigates to workouts tab when CTA is pressed', () => {
       renderHome();
       fireEvent.press(screen.getByText('Add Workout'));
-      expect(screen.getByPlaceholderText('Workout name')).toBeTruthy();
-    });
-
-    it('shows Cancel and Create buttons in input form', () => {
-      renderHome();
-      fireEvent.press(screen.getByText('Add Workout'));
-      expect(screen.getByText('Cancel')).toBeTruthy();
-      expect(screen.getByText('Create')).toBeTruthy();
-    });
-
-    it('hides the input form when Cancel is pressed', () => {
-      renderHome();
-      fireEvent.press(screen.getByText('Add Workout'));
-      fireEvent.press(screen.getByText('Cancel'));
-      expect(screen.queryByPlaceholderText('Workout name')).toBeNull();
-    });
-
-    it('does not create workout when name is empty', () => {
-      renderHome();
-      fireEvent.press(screen.getByText('Add Workout'));
-      fireEvent.press(screen.getByText('Create'));
-      // Input form stays open and heading remains "Get Started" (no workout created)
-      expect(screen.getByText('Get Started')).toBeTruthy();
-      expect(screen.getByPlaceholderText('Workout name')).toBeTruthy();
+      expect(mockNavigate).toHaveBeenCalledWith('/(tabs)/workouts');
     });
   });
 
   describe('with workouts', () => {
-    function renderHomeWithWorkout() {
-      const utils = renderHome();
-      fireEvent.press(screen.getByText('Add Workout'));
-      fireEvent.changeText(screen.getByPlaceholderText('Workout name'), 'Push Day');
-      fireEvent.press(screen.getByText('Create'));
-      return utils;
-    }
+    beforeEach(() => {
+      mockWorkouts.push({ id: '1', name: 'Push Day', exercises: [], createdAt: new Date() });
+    });
 
-    it('shows My Workouts heading after creating a workout', () => {
-      renderHomeWithWorkout();
+    it('shows My Workouts heading', () => {
+      renderHome();
       expect(screen.getByText('My Workouts')).toBeTruthy();
     });
 
-    it('shows the created workout in the list', () => {
-      renderHomeWithWorkout();
+    it('shows the workout in the list', () => {
+      renderHome();
       expect(screen.getByText('Push Day')).toBeTruthy();
     });
 
-    it('shows add button in header when workouts exist', () => {
-      renderHomeWithWorkout();
-      // The + icon button should be present (no "Add Workout" CTA text)
+    it('does not show Add Workout CTA text', () => {
+      renderHome();
       expect(screen.queryByText('Add Workout')).toBeNull();
+    });
+
+    it('navigates to workouts tab when header add button is pressed', () => {
+      renderHome();
+      fireEvent.press(screen.getByTestId('header-add-button'));
+      expect(mockNavigate).toHaveBeenCalledWith('/(tabs)/workouts');
     });
   });
 });
