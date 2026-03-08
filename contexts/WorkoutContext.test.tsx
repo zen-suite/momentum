@@ -143,7 +143,8 @@ describe('useWorkouts', () => {
       const workout = result.current.getWorkoutById(id!);
       expect(workout?.exercises).toHaveLength(1);
       expect(workout?.exercises[0].name).toBe('Squat');
-      expect(workout?.exercises[0].sets).toEqual([]);
+      expect(workout?.exercises[0].reps).toBe(0);
+      expect(workout?.exercises[0].numberOfSets).toBe(1);
     });
   });
 
@@ -190,8 +191,8 @@ describe('useWorkouts', () => {
     });
   });
 
-  describe('addSetToExercise', () => {
-    it('adds a set with reps=0 to an exercise', () => {
+  describe('updateExercise fields', () => {
+    it('updates reps, weight, and numberOfSets on an exercise', () => {
       const { result } = renderHook(() => useWorkouts());
 
       let workoutId: string;
@@ -202,71 +203,32 @@ describe('useWorkouts', () => {
       });
       exerciseId = result.current.getWorkoutById(workoutId!)!.exercises[0].id;
       act(() => {
-        result.current.addSetToExercise(workoutId!, exerciseId);
-      });
-
-      const sets = result.current.getWorkoutById(workoutId!)!.exercises[0].sets;
-      expect(sets).toHaveLength(1);
-      expect(sets[0].reps).toBe(0);
-      expect(sets[0].id).toBeDefined();
-    });
-  });
-
-  describe('updateSet', () => {
-    it('updates reps and weight on a set', () => {
-      const { result } = renderHook(() => useWorkouts());
-
-      let workoutId: string;
-      let exerciseId: string;
-      let setId: string;
-      act(() => {
-        workoutId = result.current.addWorkout('Strength').id;
-        result.current.addExerciseToWorkout(workoutId, 'Deadlift');
-      });
-      exerciseId = result.current.getWorkoutById(workoutId!)!.exercises[0].id;
-      act(() => {
-        result.current.addSetToExercise(workoutId!, exerciseId);
-      });
-      setId = result.current.getWorkoutById(workoutId!)!.exercises[0].sets[0]
-        .id;
-      act(() => {
-        result.current.updateSet(workoutId!, exerciseId, setId, {
-          reps: 5,
-          weight: 100,
+        result.current.updateExercise(workoutId!, exerciseId, {
+          reps: 8,
+          weight: 60,
+          numberOfSets: 4,
         });
       });
 
-      const set = result.current.getWorkoutById(workoutId!)!.exercises[0]
-        .sets[0];
-      expect(set.reps).toBe(5);
-      expect(set.weight).toBe(100);
+      const exercise = result.current.getWorkoutById(workoutId!)!.exercises[0];
+      expect(exercise.reps).toBe(8);
+      expect(exercise.weight).toBe(60);
+      expect(exercise.numberOfSets).toBe(4);
     });
-  });
 
-  describe('deleteSet', () => {
-    it('removes a set from an exercise', () => {
+    it('adds an exercise with default reps=0 and numberOfSets=1', () => {
       const { result } = renderHook(() => useWorkouts());
 
       let workoutId: string;
-      let exerciseId: string;
-      let setId: string;
       act(() => {
         workoutId = result.current.addWorkout('Strength').id;
-        result.current.addExerciseToWorkout(workoutId, 'OHP');
-      });
-      exerciseId = result.current.getWorkoutById(workoutId!)!.exercises[0].id;
-      act(() => {
-        result.current.addSetToExercise(workoutId!, exerciseId);
-      });
-      setId = result.current.getWorkoutById(workoutId!)!.exercises[0].sets[0]
-        .id;
-      act(() => {
-        result.current.deleteSet(workoutId!, exerciseId, setId);
+        result.current.addExerciseToWorkout(workoutId, 'Squat');
       });
 
-      expect(
-        result.current.getWorkoutById(workoutId!)!.exercises[0].sets,
-      ).toHaveLength(0);
+      const exercise = result.current.getWorkoutById(workoutId!)!.exercises[0];
+      expect(exercise.reps).toBe(0);
+      expect(exercise.numberOfSets).toBe(1);
+      expect(exercise.weight).toBeUndefined();
     });
   });
 });

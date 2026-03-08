@@ -14,7 +14,9 @@ const mockWorkouts: Workout[] = [
       {
         id: 'e1',
         name: 'Squat',
-        sets: [{ id: 's1', reps: 10, weight: 80 }],
+        reps: 10,
+        weight: 80,
+        numberOfSets: 3,
       },
     ],
     createdAt: new Date('2024-01-01T10:00:00.000Z'),
@@ -62,8 +64,9 @@ describe('AsyncStorageWorkout.load', () => {
 
     expect(result[0].exercises).toHaveLength(1);
     expect(result[0].exercises[0].name).toBe('Squat');
-    expect(result[0].exercises[0].sets[0].reps).toBe(10);
-    expect(result[0].exercises[0].sets[0].weight).toBe(80);
+    expect(result[0].exercises[0].reps).toBe(10);
+    expect(result[0].exercises[0].weight).toBe(80);
+    expect(result[0].exercises[0].numberOfSets).toBe(3);
   });
 });
 

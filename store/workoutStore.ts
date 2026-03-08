@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { workoutStorage } from '@/storage';
-import { Exercise, ExerciseSet, Workout } from '@/types/workout';
+import { Exercise, Workout } from '@/types/workout';
 
 let _nextId = 0;
 const generateId = () => `${Date.now()}-${++_nextId}`;
@@ -20,14 +20,6 @@ interface WorkoutState {
     updates: Partial<Exercise>,
   ) => void;
   deleteExercise: (workoutId: string, exerciseId: string) => void;
-  addSetToExercise: (workoutId: string, exerciseId: string) => void;
-  updateSet: (
-    workoutId: string,
-    exerciseId: string,
-    setId: string,
-    updates: Partial<ExerciseSet>,
-  ) => void;
-  deleteSet: (workoutId: string, exerciseId: string, setId: string) => void;
   getWorkoutById: (id: string) => Workout | undefined;
 }
 
@@ -77,7 +69,8 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     const newExercise: Exercise = {
       id: generateId(),
       name: exerciseName,
-      sets: [],
+      reps: 0,
+      numberOfSets: 1,
     };
     set((state) => {
       const workouts = state.workouts.map((w) =>
@@ -118,74 +111,6 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
           ? {
               ...w,
               exercises: w.exercises.filter((e) => e.id !== exerciseId),
-            }
-          : w,
-      );
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
-  },
-
-  addSetToExercise: (workoutId: string, exerciseId: string) => {
-    const newSet: ExerciseSet = { id: generateId(), reps: 0 };
-    set((state) => {
-      const workouts = state.workouts.map((w) =>
-        w.id === workoutId
-          ? {
-              ...w,
-              exercises: w.exercises.map((e) =>
-                e.id === exerciseId
-                  ? { ...e, sets: [...e.sets, newSet] }
-                  : e,
-              ),
-            }
-          : w,
-      );
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
-  },
-
-  updateSet: (
-    workoutId: string,
-    exerciseId: string,
-    setId: string,
-    updates: Partial<ExerciseSet>,
-  ) => {
-    set((state) => {
-      const workouts = state.workouts.map((w) =>
-        w.id === workoutId
-          ? {
-              ...w,
-              exercises: w.exercises.map((e) =>
-                e.id === exerciseId
-                  ? {
-                      ...e,
-                      sets: e.sets.map((s) =>
-                        s.id === setId ? { ...s, ...updates } : s,
-                      ),
-                    }
-                  : e,
-              ),
-            }
-          : w,
-      );
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
-  },
-
-  deleteSet: (workoutId: string, exerciseId: string, setId: string) => {
-    set((state) => {
-      const workouts = state.workouts.map((w) =>
-        w.id === workoutId
-          ? {
-              ...w,
-              exercises: w.exercises.map((e) =>
-                e.id === exerciseId
-                  ? { ...e, sets: e.sets.filter((s) => s.id !== setId) }
-                  : e,
-              ),
             }
           : w,
       );

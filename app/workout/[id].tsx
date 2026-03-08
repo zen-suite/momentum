@@ -1,6 +1,6 @@
+import { ThemedView } from '@/components/ThemedView';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
-import { ThemedView } from '@/components/ThemedView';
 import { useWorkouts } from '@/contexts/WorkoutContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Exercise } from '@/types/workout';
@@ -16,10 +16,8 @@ export default function WorkoutDetailScreen() {
   const {
     getWorkoutById,
     addExerciseToWorkout,
+    updateExercise,
     deleteExercise,
-    addSetToExercise,
-    updateSet,
-    deleteSet,
   } = useWorkouts();
 
   const workout = getWorkoutById(id!);
@@ -60,27 +58,20 @@ export default function WorkoutDetailScreen() {
     );
   };
 
-  const handleAddSet = (exerciseId: string) => {
-    addSetToExercise(workout.id, exerciseId);
-  };
-
-  const handleDeleteSet = (exerciseId: string, setId: string) => {
-    deleteSet(workout.id, exerciseId, setId);
-  };
-
-  const handleUpdateSet = (
+  const handleUpdateExerciseField = (
     exerciseId: string,
-    setId: string,
-    field: 'reps' | 'weight',
+    field: 'reps' | 'weight' | 'numberOfSets',
     value: string,
   ) => {
     const numValue = value === '' ? undefined : parseInt(value, 10);
     if (value !== '' && (isNaN(numValue!) || numValue! < 0)) {
       return;
     }
-    updateSet(workout.id, exerciseId, setId, {
-      [field]: field === 'reps' ? numValue || 0 : numValue,
-    });
+    if (field === 'weight') {
+      updateExercise(workout.id, exerciseId, { weight: numValue });
+    } else {
+      updateExercise(workout.id, exerciseId, { [field]: numValue ?? 0 });
+    }
   };
 
   const renderExercise = (exercise: Exercise) => (
@@ -104,71 +95,52 @@ export default function WorkoutDetailScreen() {
         </Pressable>
       </View>
 
-      {exercise.sets.length === 0 ? (
-        <Text className="mb-3 opacity-60">No sets yet</Text>
-      ) : (
-        <View className="mb-3">
-          <View className="mb-2 flex-row px-1">
-            <Text className="flex-1 text-center text-xs font-semibold opacity-70">
-              Set
-            </Text>
-            <Text className="flex-1 text-center text-xs font-semibold opacity-70">
-              Reps
-            </Text>
-            <Text className="flex-1 text-center text-xs font-semibold opacity-70">
-              Weight (kg)
-            </Text>
-            <View className="w-6" />
-          </View>
-          {exercise.sets.map((set, index) => (
-            <View key={set.id} className="mb-2 flex-row items-center gap-2">
-              <Text
-                className="text-center font-semibold"
-                style={{ flex: 0.5 }}
-              >
-                {index + 1}
-              </Text>
-              <TextInput
-                className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
-                style={{ borderColor: PRIMARY_COLOR }}
-                value={set.reps?.toString() || ''}
-                onChangeText={(value) =>
-                  handleUpdateSet(exercise.id, set.id, 'reps', value)
-                }
-                keyboardType="numeric"
-                placeholder="0"
-                placeholderTextColor={textColor + '60'}
-              />
-              <TextInput
-                className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
-                style={{ borderColor: PRIMARY_COLOR }}
-                value={set.weight?.toString() || ''}
-                onChangeText={(value) =>
-                  handleUpdateSet(exercise.id, set.id, 'weight', value)
-                }
-                keyboardType="numeric"
-                placeholder="Optional"
-                placeholderTextColor={textColor + '60'}
-              />
-              <Pressable
-                className="w-6 items-center"
-                onPress={() => handleDeleteSet(exercise.id, set.id)}
-              >
-                <Ionicons name="close-circle" size={20} color="red" />
-              </Pressable>
-            </View>
-          ))}
+      <View className="mb-3 gap-3">
+        <View className="flex-row items-center gap-3">
+          <Text className="w-24 text-sm font-semibold opacity-70">Sets</Text>
+          <TextInput
+            className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
+            style={{ borderColor: PRIMARY_COLOR }}
+            value={exercise.numberOfSets?.toString()}
+            onChangeText={(value) =>
+              handleUpdateExerciseField(exercise.id, 'numberOfSets', value)
+            }
+            keyboardType="numeric"
+            placeholder="1"
+            placeholderTextColor={textColor + '60'}
+          />
         </View>
-      )}
-
-      <Pressable
-        className="flex-row items-center justify-center gap-1.5 rounded-lg border p-3"
-        style={{ borderColor: PRIMARY_COLOR }}
-        onPress={() => handleAddSet(exercise.id)}
-      >
-        <Ionicons name="add" size={20} color={PRIMARY_COLOR} />
-        <Text style={{ color: PRIMARY_COLOR }}>Add Set</Text>
-      </Pressable>
+        <View className="flex-row items-center gap-3">
+          <Text className="w-24 text-sm font-semibold opacity-70">Reps</Text>
+          <TextInput
+            className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
+            style={{ borderColor: PRIMARY_COLOR }}
+            value={exercise.reps.toString()}
+            onChangeText={(value) =>
+              handleUpdateExerciseField(exercise.id, 'reps', value)
+            }
+            keyboardType="numeric"
+            placeholder="0"
+            placeholderTextColor={textColor + '60'}
+          />
+        </View>
+        <View className="flex-row items-center gap-3">
+          <Text className="w-24 text-sm font-semibold opacity-70">
+            Weight (kg)
+          </Text>
+          <TextInput
+            className="flex-1 rounded border p-2 text-center text-[#11181C] dark:text-[#ECEDEE]"
+            style={{ borderColor: PRIMARY_COLOR }}
+            value={exercise.weight?.toString() ?? ''}
+            onChangeText={(value) =>
+              handleUpdateExerciseField(exercise.id, 'weight', value)
+            }
+            keyboardType="numeric"
+            placeholder="Optional"
+            placeholderTextColor={textColor + '60'}
+          />
+        </View>
+      </View>
     </View>
   );
 
@@ -223,9 +195,7 @@ export default function WorkoutDetailScreen() {
                   style={{ backgroundColor: PRIMARY_COLOR }}
                   onPress={handleAddExercise}
                 >
-                  <Text style={{ color: 'white', fontWeight: '600' }}>
-                    Add
-                  </Text>
+                  <Text style={{ color: 'white', fontWeight: '600' }}>Add</Text>
                 </Pressable>
               </View>
             </View>

@@ -23,9 +23,6 @@ export function useWorkouts() {
       addExerciseToWorkout: state.addExerciseToWorkout,
       updateExercise: state.updateExercise,
       deleteExercise: state.deleteExercise,
-      addSetToExercise: state.addSetToExercise,
-      updateSet: state.updateSet,
-      deleteSet: state.deleteSet,
       getWorkoutById: state.getWorkoutById,
     })),
   );
