@@ -1,14 +1,12 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useWorkouts } from '@/contexts/workout-context';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useThemeColor } from '@/hooks/use-theme-color';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, FlatList, Pressable, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const PRIMARY_COLOR = '#0a7ea4';
 
 export default function WorkoutsScreen() {
   const { workouts, addWorkout, deleteWorkout } = useWorkouts();
@@ -16,8 +14,9 @@ export default function WorkoutsScreen() {
   const [showNewWorkoutInput, setShowNewWorkoutInput] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState('');
 
-  const colorScheme = useColorScheme() ?? 'light';
-  const textColor = colorScheme === 'dark' ? '#ECEDEE' : '#11181C';
+  const primaryColor = useThemeColor({}, 'primary');
+  const backgroundColor = useThemeColor({}, 'background');
+  const textColor = useThemeColor({}, 'text');
 
   const handleCreateWorkout = () => {
     if (newWorkoutName.trim()) {
@@ -45,9 +44,10 @@ export default function WorkoutsScreen() {
 
   const renderWorkoutItem = ({ item }: { item: any }) => (
     <Pressable
-      className="flex-row items-center justify-between rounded-xl bg-[#fff] p-4 dark:bg-[#151718]"
+      className="flex-row items-center justify-between rounded-xl p-4"
       style={({ pressed }) => ({
         opacity: pressed ? 0.7 : 1,
+        backgroundColor,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -76,27 +76,27 @@ export default function WorkoutsScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-[#fff] dark:bg-[#151718]">
+    <SafeAreaView className="flex-1" style={{ backgroundColor }}>
       <ThemedView className="flex-1 px-4">
         <View className="mb-5 mt-4 flex-row items-center justify-between">
           <ThemedText type="title">My Workouts</ThemedText>
           <Pressable
             className="h-10 w-10 items-center justify-center rounded-full"
-            style={{ backgroundColor: PRIMARY_COLOR }}
+            style={{ backgroundColor: primaryColor }}
             onPress={() => setShowNewWorkoutInput(true)}
           >
-            <Ionicons name="add" size={24} color="white" />
+            <Ionicons name="add" size={24} color={backgroundColor} />
           </Pressable>
         </View>
 
         {showNewWorkoutInput && (
           <View
             className="mb-5 rounded-xl border-2 p-4"
-            style={{ borderColor: PRIMARY_COLOR }}
+            style={{ borderColor: primaryColor }}
           >
             <TextInput
-              className="mb-3 rounded-lg border p-3 text-base text-[#11181C] dark:text-[#ECEDEE]"
-              style={{ borderColor: PRIMARY_COLOR }}
+              className="mb-3 rounded-lg border p-3 text-base"
+              style={{ borderColor: primaryColor }}
               placeholder="Workout name"
               placeholderTextColor={textColor + '80'}
               value={newWorkoutName}
@@ -107,7 +107,7 @@ export default function WorkoutsScreen() {
             <View className="flex-row gap-3">
               <Pressable
                 className="flex-1 items-center rounded-lg border p-3"
-                style={{ borderColor: PRIMARY_COLOR }}
+                style={{ borderColor: primaryColor }}
                 onPress={() => {
                   setShowNewWorkoutInput(false);
                   setNewWorkoutName('');
@@ -117,10 +117,10 @@ export default function WorkoutsScreen() {
               </Pressable>
               <Pressable
                 className="flex-1 items-center rounded-lg p-3"
-                style={{ backgroundColor: PRIMARY_COLOR }}
+                style={{ backgroundColor: primaryColor }}
                 onPress={handleCreateWorkout}
               >
-                <ThemedText style={{ color: 'white', fontWeight: '600' }}>
+                <ThemedText style={{ color: backgroundColor, fontWeight: '600' }}>
                   Create
                 </ThemedText>
               </Pressable>
