@@ -1,5 +1,15 @@
 import { Exercise, ExerciseSet, Workout } from '@/types/workout';
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import {
+  loadWorkouts,
+  saveWorkouts,
+} from '@/hooks/useWorkoutStorage';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 let _nextId = 0;
 const generateId = () => `${Date.now()}-${++_nextId}`;
@@ -31,6 +41,19 @@ const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 
 export function WorkoutProvider({ children }: { children: React.ReactNode }) {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    loadWorkouts().then((loaded) => {
+      setWorkouts(loaded);
+      setIsLoaded(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    saveWorkouts(workouts);
+  }, [workouts, isLoaded]);
 
   const addWorkout = useCallback((name: string): Workout => {
     const newWorkout: Workout = {
