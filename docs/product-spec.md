@@ -1,26 +1,29 @@
 # Product Spec: Workout Routine Tracker (Mobile App)
 
 - [Product Spec: Workout Routine Tracker (Mobile App)](#product-spec-workout-routine-tracker-mobile-app)
-- [1. Product Summary](#1-product-summary)
-- [2. Core Concepts](#2-core-concepts)
-  - [Workout](#workout)
-  - [Exercise](#exercise)
-  - [Set](#set)
-- [3. Core Features](#3-core-features)
-  - [3.1 Workout Management](#31-workout-management)
-  - [3.2 Exercise Management](#32-exercise-management)
-  - [3.3 Set Management](#33-set-management)
-- [3.4 Local Storage](#34-local-storage)
-- [4. Screens](#4-screens)
-  - [Home Screen](#home-screen)
-  - [Workout Detail Screen](#workout-detail-screen)
-- [5. Completion Logic](#5-completion-logic)
-  - [Set Completion](#set-completion)
-  - [Exercise Completion](#exercise-completion)
-  - [Workout Completion](#workout-completion)
-- [6. Restart Routine](#6-restart-routine)
-- [7. UX Principles](#7-ux-principles)
-- [8. Future Features](#8-future-features)
+  - [1. Product Summary](#1-product-summary)
+  - [2. Core Concepts](#2-core-concepts)
+    - [Workout](#workout)
+    - [Exercise](#exercise)
+    - [Set](#set)
+  - [3. Core Features](#3-core-features)
+    - [3.1 Workout Management](#31-workout-management)
+    - [3.2 Exercise Management](#32-exercise-management)
+    - [3.3 Set Management](#33-set-management)
+    - [3.4 Workout Logging](#34-workout-logging)
+    - [3.5 Local Storage](#35-local-storage)
+  - [4. Screens](#4-screens)
+    - [Home Screen (Workout Logging)](#home-screen-workout-logging)
+    - [Workout Log Screen](#workout-log-screen)
+    - [Workouts List Screen (Workout Management)](#workouts-list-screen-workout-management)
+    - [Workout Detail Screen (Workout Management)](#workout-detail-screen-workout-management)
+  - [5. Completion Logic](#5-completion-logic)
+    - [Set Completion](#set-completion)
+    - [Exercise Completion](#exercise-completion)
+    - [Workout Completion](#workout-completion)
+  - [6. Restart Routine](#6-restart-routine)
+  - [7. UX Principles](#7-ux-principles)
+  - [8. Future Features](#8-future-features)
 
 ## 1. Product Summary
 
@@ -135,7 +138,21 @@ Capabilities
 
 ---
 
-### 3.4 Local Storage
+### 3.4 Workout Logging
+
+Users can track workout completion during a session without modifying the workout definition.
+
+Capabilities
+
+- mark a workout as done (marks all its exercises and sets as done)
+- mark an exercise as done (marks all its sets as done)
+- mark an individual set as done
+- completion auto-propagates upward: when all sets are done, the exercise is automatically marked done; when all exercises are done, the workout is automatically marked done
+- restart routine to reset all completion state across all workouts, exercises, and sets
+
+---
+
+### 3.5 Local Storage
 
 All user-created data is persisted to device local storage so it survives app restarts.
 
@@ -160,46 +177,88 @@ Storage technology
 
 ## 4. Screens
 
-### Home Screen
+### Home Screen (Workout Logging)
 
-Displays a list of workouts only.
+Displays all workouts as todo items. If no workouts exist, show an empty state.
 
 Example
 
-Upper Body ☐
-Leg Day ☐
-Push Day ☐
+☐ Upper Body
+☐ Leg Day
+☐ Push Day
 
 User interactions
 
-- tap workout to open it
-- mark workout as complete
-- reorder workouts
-- restart routine button
+- tap workout row to open the Workout Log screen
+- tap checkbox to mark workout as complete (marks all its exercises and sets as done)
+- restart routine button to reset all completion state
 
 ---
 
-### Workout Detail Screen
+### Workout Log Screen
 
-Displays exercises inside a selected workout.
+Opened when the user taps a workout row on the Home Screen. Displays that workout's exercises and their sets as nested todo items. Read-only — no editing.
 
 Example
 
-Bench Press ☐
- ☐ 10 reps 40kg
- ☐ 10 reps 40kg
- ☐ 8 reps 45kg
+☐ Bench Press
+   ☐ 10 reps · 40 kg
+   ☐ 10 reps · 40 kg
+   ☐ 8 reps · 45 kg
 
-Pull Up ☐
- ☐ 10 reps
- ☐ 8 reps
- ☐ 6 reps
+☐ Pull Up
+   ☐ 10 reps
+   ☐ 8 reps
+   ☐ 6 reps
 
 User interactions
 
-- mark sets as completed
-- mark exercise as completed
-- view progress of the workout
+- tap exercise checkbox to mark exercise as done (marks all its sets as done)
+- tap set checkbox to mark individual set as done
+- view overall workout progress (e.g. completed sets out of total)
+
+---
+
+### Workouts List Screen (Workout Management)
+
+A dedicated screen for managing workout routines. Separate from the logging flow.
+
+Example
+
+Upper Body
+Leg Day
+Push Day
++ Add Workout
+
+User interactions
+
+- create a new workout
+- delete a workout
+- reorder workouts via drag and drop
+- tap a workout to open the Workout Detail screen
+
+---
+
+### Workout Detail Screen (Workout Management)
+
+Opened from the Workouts List screen. Allows the user to edit a workout and manage its exercises.
+
+Example
+
+[Upper Body]         ← editable name field
+
+Bench Press          [delete]
+Pull Up              [delete]
+Squat                [delete]
++ Add Exercise
+
+User interactions
+
+- edit workout name inline
+- add an exercise
+- edit an exercise name
+- delete an exercise
+- reorder exercises via drag and drop
 
 ---
 
