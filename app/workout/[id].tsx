@@ -17,10 +17,13 @@ export default function WorkoutDetailScreen() {
     getWorkoutById,
     addExerciseToWorkout,
     updateExercise,
+    updateWorkout,
     deleteExercise,
   } = useWorkouts();
   const workout = getWorkoutById(id!);
   const [showAddExercise, setShowAddExercise] = useState(false);
+  const [editingWorkoutName, setEditingWorkoutName] = useState(false);
+  const [workoutNameInput, setWorkoutNameInput] = useState('');
   const [newExerciseName, setNewExerciseName] = useState('');
   const [editingExerciseId, setEditingExerciseId] = useState<string | null>(
     null,
@@ -185,7 +188,37 @@ export default function WorkoutDetailScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View className="mb-5">
-            <Heading size="2xl">{workout.name}</Heading>
+            {editingWorkoutName ? (
+              <Input variant="underlined">
+                <InputField
+                  value={workoutNameInput}
+                  onChangeText={setWorkoutNameInput}
+                  autoFocus
+                  style={{ fontSize: 24, fontWeight: 'bold' }}
+                  onBlur={() => {
+                    if (workoutNameInput.trim()) {
+                      updateWorkout(workout.id, { name: workoutNameInput.trim() });
+                    }
+                    setEditingWorkoutName(false);
+                  }}
+                  onSubmitEditing={() => {
+                    if (workoutNameInput.trim()) {
+                      updateWorkout(workout.id, { name: workoutNameInput.trim() });
+                    }
+                    setEditingWorkoutName(false);
+                  }}
+                />
+              </Input>
+            ) : (
+              <Pressable
+                onPress={() => {
+                  setWorkoutNameInput(workout.name);
+                  setEditingWorkoutName(true);
+                }}
+              >
+                <Heading size="2xl">{workout.name}</Heading>
+              </Pressable>
+            )}
             <Text className="mt-1 text-xs opacity-60">
               Created: {new Date(workout.createdAt).toLocaleDateString()}
             </Text>
