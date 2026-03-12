@@ -1,10 +1,10 @@
 import { create } from 'zustand';
+import { v7 as uuidv7 } from 'uuid';
 
 import { workoutLogStorage } from '@/storage';
 import { ExerciseLog, Workout, WorkoutLog } from '@/types/workout';
 
-let _nextId = 0;
-const generateId = () => `${Date.now()}-${++_nextId}`;
+const generateId = () => uuidv7();
 
 function migrateExerciseLog(e: ExerciseLog): ExerciseLog {
   if (e.sets && e.sets.length > 0) return e;

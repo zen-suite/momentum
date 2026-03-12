@@ -1,10 +1,10 @@
 import { create } from 'zustand';
+import { v7 as uuidv7 } from 'uuid';
 
 import { workoutStorage } from '@/storage';
 import { Exercise, Workout } from '@/types/workout';
 
-let _nextId = 0;
-const generateId = () => `${Date.now()}-${++_nextId}`;
+const generateId = () => uuidv7();
 
 interface WorkoutState {
   workouts: Workout[];
