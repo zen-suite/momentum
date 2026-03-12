@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
+import { useLoadWorkoutLogs } from '@/hooks/useLoadWorkoutLogs';
+import { useLoadWorkouts } from '@/hooks/useLoadWorkouts';
+import { usePersistWorkoutLogs } from '@/hooks/usePersistWorkoutLogs';
+import { usePersistWorkouts } from '@/hooks/usePersistWorkouts';
 import { useWorkoutLogStore } from '@/store/workoutLogStore';
 import { useWorkoutStore } from '@/store/workoutStore';
 
 export function WorkoutProvider({ children }: { children: React.ReactNode }) {
-  const loadWorkouts = useWorkoutStore((state) => state.loadWorkouts);
-
-  useEffect(() => {
-    loadWorkouts();
-  }, [loadWorkouts]);
+  useLoadWorkouts();
+  usePersistWorkouts();
 
   return <>{children}</>;
 }
@@ -34,11 +35,8 @@ export function WorkoutLogProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const loadLogs = useWorkoutLogStore((state) => state.loadLogs);
-
-  useEffect(() => {
-    loadLogs();
-  }, [loadLogs]);
+  useLoadWorkoutLogs();
+  usePersistWorkoutLogs();
 
   return <>{children}</>;
 }

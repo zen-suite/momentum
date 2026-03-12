@@ -1,7 +1,7 @@
-import { create } from 'zustand';
+import 'react-native-get-random-values';
 import { v7 as uuidv7 } from 'uuid';
+import { create } from 'zustand';
 
-import { workoutStorage } from '@/storage';
 import { Exercise, Workout } from '@/types/workout';
 
 const generateId = () => uuidv7();
@@ -9,7 +9,7 @@ const generateId = () => uuidv7();
 interface WorkoutState {
   workouts: Workout[];
   isLoaded: boolean;
-  loadWorkouts: () => Promise<void>;
+  setWorkouts: (workouts: Workout[]) => void;
   addWorkout: (name: string) => Workout;
   updateWorkout: (id: string, updates: Partial<Workout>) => void;
   deleteWorkout: (id: string) => void;
@@ -27,9 +27,8 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
   workouts: [],
   isLoaded: false,
 
-  loadWorkouts: async () => {
-    const loaded = await workoutStorage.load();
-    set({ workouts: loaded, isLoaded: true });
+  setWorkouts: (workouts: Workout[]) => {
+    set({ workouts, isLoaded: true });
   },
 
   addWorkout: (name: string): Workout => {
@@ -39,30 +38,22 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
       exercises: [],
       createdAt: new Date(),
     };
-    set((state) => {
-      const workouts = [...state.workouts, newWorkout];
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
+    set((state) => ({ workouts: [...state.workouts, newWorkout] }));
     return newWorkout;
   },
 
   updateWorkout: (id: string, updates: Partial<Workout>) => {
-    set((state) => {
-      const workouts = state.workouts.map((w) =>
+    set((state) => ({
+      workouts: state.workouts.map((w) =>
         w.id === id ? { ...w, ...updates } : w,
-      );
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
+      ),
+    }));
   },
 
   deleteWorkout: (id: string) => {
-    set((state) => {
-      const workouts = state.workouts.filter((w) => w.id !== id);
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
+    set((state) => ({
+      workouts: state.workouts.filter((w) => w.id !== id),
+    }));
   },
 
   addExerciseToWorkout: (workoutId: string, exerciseName: string) => {
@@ -72,15 +63,13 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
       reps: 0,
       numberOfSets: 1,
     };
-    set((state) => {
-      const workouts = state.workouts.map((w) =>
+    set((state) => ({
+      workouts: state.workouts.map((w) =>
         w.id === workoutId
           ? { ...w, exercises: [...w.exercises, newExercise] }
           : w,
-      );
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
+      ),
+    }));
   },
 
   updateExercise: (
@@ -88,8 +77,8 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     exerciseId: string,
     updates: Partial<Exercise>,
   ) => {
-    set((state) => {
-      const workouts = state.workouts.map((w) =>
+    set((state) => ({
+      workouts: state.workouts.map((w) =>
         w.id === workoutId
           ? {
               ...w,
@@ -98,25 +87,21 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
               ),
             }
           : w,
-      );
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
+      ),
+    }));
   },
 
   deleteExercise: (workoutId: string, exerciseId: string) => {
-    set((state) => {
-      const workouts = state.workouts.map((w) =>
+    set((state) => ({
+      workouts: state.workouts.map((w) =>
         w.id === workoutId
           ? {
               ...w,
               exercises: w.exercises.filter((e) => e.id !== exerciseId),
             }
           : w,
-      );
-      workoutStorage.save(workouts);
-      return { workouts };
-    });
+      ),
+    }));
   },
 
   getWorkoutById: (id: string) => {

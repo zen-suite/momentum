@@ -1,7 +1,8 @@
 import { create } from 'zustand';
+
+import 'react-native-get-random-values';
 import { v7 as uuidv7 } from 'uuid';
 
-import { workoutLogStorage } from '@/storage';
 import { ExerciseLog, Workout, WorkoutLog } from '@/types/workout';
 
 const generateId = () => uuidv7();
@@ -49,7 +50,7 @@ function getOrCreateLog(
 interface WorkoutLogState {
   workoutLogs: Record<string, WorkoutLog>;
   isLoaded: boolean;
-  loadLogs: () => Promise<void>;
+  setWorkoutLogs: (logs: Record<string, WorkoutLog>) => void;
   completeSet: (workout: Workout, exerciseId: string, setIndex: number) => void;
   completeExercise: (workout: Workout, exerciseId: string) => void;
   toggleWorkoutComplete: (workout: Workout) => void;
@@ -61,9 +62,8 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
   workoutLogs: {},
   isLoaded: false,
 
-  loadLogs: async () => {
-    const loaded = await workoutLogStorage.load();
-    set({ workoutLogs: loaded, isLoaded: true });
+  setWorkoutLogs: (logs: Record<string, WorkoutLog>) => {
+    set({ workoutLogs: logs, isLoaded: true });
   },
 
   completeSet: (workout: Workout, exerciseId: string, setIndex: number) => {
@@ -73,7 +73,8 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
       const updatedExercises = log.exercises.map((e) => {
         if (e.exercise.id !== exerciseId) return e;
         const sets = e.sets ?? [];
-        const isSetDone = !!sets.find((s) => s.setIndex === setIndex)?.completedAt;
+        const isSetDone = !!sets.find((s) => s.setIndex === setIndex)
+          ?.completedAt;
         const updatedSets = sets.map((s) =>
           s.setIndex === setIndex
             ? { ...s, completedAt: isSetDone ? undefined : now }
@@ -92,9 +93,9 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
         exercises: updatedExercises,
         completedAt: allDone ? now : undefined,
       };
-      const workoutLogs = { ...state.workoutLogs, [workout.id]: updatedLog };
-      workoutLogStorage.save(workoutLogs);
-      return { workoutLogs };
+      return {
+        workoutLogs: { ...state.workoutLogs, [workout.id]: updatedLog },
+      };
     });
   },
 
@@ -115,9 +116,9 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
         exercises: updatedExercises,
         completedAt: allDone ? now : undefined,
       };
-      const workoutLogs = { ...state.workoutLogs, [workout.id]: updatedLog };
-      workoutLogStorage.save(workoutLogs);
-      return { workoutLogs };
+      return {
+        workoutLogs: { ...state.workoutLogs, [workout.id]: updatedLog },
+      };
     });
   },
 
@@ -145,17 +146,14 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
           })),
         };
       }
-      const workoutLogs = { ...state.workoutLogs, [workout.id]: updatedLog };
-      workoutLogStorage.save(workoutLogs);
-      return { workoutLogs };
+      return {
+        workoutLogs: { ...state.workoutLogs, [workout.id]: updatedLog },
+      };
     });
   },
 
   restartRoutine: () => {
-    set(() => {
-      workoutLogStorage.save({});
-      return { workoutLogs: {} };
-    });
+    set({ workoutLogs: {} });
   },
 
   getLog: (workoutId: string) => {
