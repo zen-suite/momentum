@@ -1,27 +1,78 @@
 import { ThemedView } from '@/components/ThemedView';
-import { Card } from '@/components/ui/card';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionHeader,
+  AccordionIcon,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { useWorkoutLogs, useWorkouts } from '@/contexts/WorkoutContext';
-import { Exercise, ExerciseLog, Workout, WorkoutLog } from '@/types/workout';
-import { CheckSquare, Square, Dumbbell } from 'lucide-react-native';
+import {
+  Exercise,
+  ExerciseLog,
+  SetLog,
+  Workout,
+  WorkoutLog,
+} from '@/types/workout';
 import { Stack, useLocalSearchParams } from 'expo-router';
+import {
+  ChevronDown,
+  Dumbbell,
+  Square,
+  SquareCheck,
+} from 'lucide-react-native';
 import { Pressable, ScrollView, View } from 'react-native';
 
 interface WorkoutLogViewProps {
   workout: Workout;
   log: WorkoutLog | undefined;
   onCompleteExercise: (workout: Workout, exerciseId: string) => void;
+  onCompleteSet: (
+    workout: Workout,
+    exerciseId: string,
+    setIndex: number,
+  ) => void;
+}
+
+function SetRow({
+  setLog,
+  setNumber,
+  onComplete,
+}: {
+  setLog: SetLog | undefined;
+  setNumber: number;
+  onComplete: () => void;
+}) {
+  const isDone = !!setLog?.completedAt;
+  return (
+    <Pressable
+      className="flex-row items-center gap-3 px-4 py-2 text-primary"
+      style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+      onPress={onComplete}
+    >
+      {isDone ? <SquareCheck size={20} /> : <Square size={20} />}
+      <Text
+        className={`text-sm ${isDone ? 'line-through opacity-50' : 'opacity-80'}`}
+      >
+        Set {setNumber}
+      </Text>
+    </Pressable>
+  );
 }
 
 function ExerciseRow({
   exercise,
   exerciseLog,
-  onComplete,
+  onCompleteExercise,
+  onCompleteSet,
 }: {
   exercise: Exercise;
   exerciseLog: ExerciseLog | undefined;
-  onComplete: () => void;
+  onCompleteExercise: () => void;
+  onCompleteSet: (setIndex: number) => void;
 }) {
   const isCompleted = !!exerciseLog?.completedAt;
 
@@ -34,30 +85,53 @@ function ExerciseRow({
     .join(' · ');
 
   return (
-    <Card>
-      <Pressable
-        className="flex-row items-center"
-        style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-        onPress={onComplete}
-      >
-        {isCompleted ? (
-          <CheckSquare size={26} color="#6C63FF" style={{ marginRight: 12 }} />
-        ) : (
-          <Square size={26} color="#9BA1A6" style={{ marginRight: 12 }} />
-        )}
-        <View className="flex-1 gap-1">
-          <Heading
-            size="md"
-            className={isCompleted ? 'line-through opacity-50' : ''}
-          >
-            {exercise.name}
-          </Heading>
-          {setsLabel ? (
-            <Text className="text-[13px] opacity-60">{setsLabel}</Text>
-          ) : null}
-        </View>
-      </Pressable>
-    </Card>
+    <Accordion
+      type="multiple"
+      variant="unfilled"
+      className="overflow-hidden rounded-lg border border-outline-100"
+    >
+      <AccordionItem value={exercise.id}>
+        <AccordionHeader>
+          <AccordionTrigger className="px-4 py-3 text-primary">
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation();
+                onCompleteExercise();
+              }}
+              hitSlop={8}
+            >
+              {isCompleted ? (
+                <SquareCheck size={26} style={{ marginRight: 12 }} />
+              ) : (
+                <Square size={26} style={{ marginRight: 12 }} />
+              )}
+            </Pressable>
+            <View className="flex-1 gap-1">
+              <Heading
+                size="md"
+                className={isCompleted ? 'line-through opacity-50' : ''}
+              >
+                {exercise.name}
+              </Heading>
+              {setsLabel ? (
+                <Text className="text-[13px] opacity-60">{setsLabel}</Text>
+              ) : null}
+            </View>
+            <AccordionIcon as={ChevronDown} size="xl" className="ml-2" />
+          </AccordionTrigger>
+        </AccordionHeader>
+        <AccordionContent className="px-0 pb-2 pt-0">
+          {Array.from({ length: exercise.numberOfSets }, (_, i) => (
+            <SetRow
+              key={i}
+              setLog={exerciseLog?.sets?.find((s) => s.setIndex === i)}
+              setNumber={i + 1}
+              onComplete={() => onCompleteSet(i)}
+            />
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }
 
@@ -65,6 +139,7 @@ function WorkoutLogView({
   workout,
   log,
   onCompleteExercise,
+  onCompleteSet,
 }: WorkoutLogViewProps) {
   const completedCount = log
     ? log.exercises.filter((e) => !!e.completedAt).length
@@ -108,7 +183,12 @@ function WorkoutLogView({
                   key={exercise.id}
                   exercise={exercise}
                   exerciseLog={getExerciseLog(exercise.id)}
-                  onComplete={() => onCompleteExercise(workout, exercise.id)}
+                  onCompleteExercise={() =>
+                    onCompleteExercise(workout, exercise.id)
+                  }
+                  onCompleteSet={(setIndex) =>
+                    onCompleteSet(workout, exercise.id, setIndex)
+                  }
                 />
               ))}
             </View>
@@ -123,7 +203,7 @@ function withWorkoutLog(Component: typeof WorkoutLogView) {
   return function WorkoutLogContainer() {
     const { id } = useLocalSearchParams<{ id: string }>();
     const { getWorkoutById } = useWorkouts();
-    const { getLog, completeExercise } = useWorkoutLogs();
+    const { getLog, completeExercise, completeSet } = useWorkoutLogs();
 
     const workout = getWorkoutById(id!);
 
@@ -142,6 +222,7 @@ function withWorkoutLog(Component: typeof WorkoutLogView) {
         workout={workout}
         log={log}
         onCompleteExercise={completeExercise}
+        onCompleteSet={completeSet}
       />
     );
   };

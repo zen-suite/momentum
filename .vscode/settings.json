@@ -7,5 +7,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "tailwindCSS.experimental.classRegex": [
     [":\\s*['\"`]([^'\"\\n`]*)['\"`]", "([^\\s'\"\\n`]+)"]
-  ]
+  ],
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

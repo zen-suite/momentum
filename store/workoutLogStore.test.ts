@@ -103,17 +103,48 @@ describe('workoutLogStore', () => {
   });
 
   describe('completeSet', () => {
-    it('marks an exercise as completed (same as completeExercise)', () => {
+    it('marks a specific set as completed', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
-        result.current.completeSet(workout, 'e1');
+        result.current.completeSet(workout, 'e1', 1);
+      });
+
+      const log = result.current.getLog('w1');
+      const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
+      expect(exerciseLog?.sets[1].completedAt).toBeInstanceOf(Date);
+      expect(exerciseLog?.sets[0].completedAt).toBeUndefined();
+    });
+
+    it('auto-completes the exercise when all sets are done', () => {
+      const { result } = renderHook(() => useWorkoutLogStore());
+      const workout = makeWorkout({
+        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 2 }],
+      });
+
+      act(() => {
+        result.current.completeSet(workout, 'e1', 0);
+        result.current.completeSet(workout, 'e1', 1);
       });
 
       const log = result.current.getLog('w1');
       const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
       expect(exerciseLog?.completedAt).toBeInstanceOf(Date);
+    });
+
+    it('toggles a set off when already completed', () => {
+      const { result } = renderHook(() => useWorkoutLogStore());
+      const workout = makeWorkoutWithExercises();
+
+      act(() => {
+        result.current.completeSet(workout, 'e1', 0);
+        result.current.completeSet(workout, 'e1', 0);
+      });
+
+      const log = result.current.getLog('w1');
+      const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
+      expect(exerciseLog?.sets[0].completedAt).toBeUndefined();
     });
   });
 

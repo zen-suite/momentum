@@ -4,15 +4,15 @@ import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { useWorkoutLogs, useWorkouts } from '@/contexts/WorkoutContext';
 import { Workout, WorkoutLog } from '@/types/workout';
-import {
-  CheckSquare,
-  Square,
-  ChevronRight,
-  RotateCcw,
-  Plus,
-  Dumbbell,
-} from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import {
+  ChevronRight,
+  Dumbbell,
+  Plus,
+  RotateCcw,
+  Square,
+  SquareCheck,
+} from 'lucide-react-native';
 import { FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -55,7 +55,7 @@ function HomeView({
             hitSlop={8}
           >
             {isCompleted ? (
-              <CheckSquare size={26} color="#6C63FF" />
+              <SquareCheck size={26} color="#6C63FF" />
             ) : (
               <Square size={26} color="#9BA1A6" />
             )}
@@ -98,7 +98,7 @@ function HomeView({
             {hasWorkouts && (
               <Pressable
                 testID="header-add-button"
-                className="bg-primary h-10 w-10 items-center justify-center rounded-full"
+                className="h-10 w-10 items-center justify-center rounded-full bg-primary"
                 onPress={onAddWorkout}
               >
                 <Plus size={24} color="white" />
@@ -117,7 +117,7 @@ function HomeView({
               Create your first workout to get started
             </Text>
             <Pressable
-              className="bg-primary mt-2 flex-row items-center gap-2 rounded-xl px-6 py-3.5"
+              className="mt-2 flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5"
               onPress={onAddWorkout}
             >
               <Plus size={20} color="white" />

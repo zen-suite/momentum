@@ -14,10 +14,16 @@ export interface Workout {
   completedAt?: Date;
 }
 
+export interface SetLog {
+  setIndex: number; // 0-based index
+  completedAt?: Date;
+}
+
 export interface ExerciseLog {
   id: string;
   exercise: Exercise;
-  completedAt?: Date;
+  sets: SetLog[];
+  completedAt?: Date; // set when all sets are done
 }
 
 export interface WorkoutLog {
