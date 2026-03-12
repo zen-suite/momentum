@@ -51,14 +51,10 @@ function HomeView({
           <Pressable
             testID={`checkbox-${item.id}`}
             onPress={() => onWorkoutCheck(item)}
-            className="mr-3"
+            className="mr-3 text-primary"
             hitSlop={8}
           >
-            {isCompleted ? (
-              <SquareCheck size={26} color="#6C63FF" />
-            ) : (
-              <Square size={26} color="#9BA1A6" />
-            )}
+            {isCompleted ? <SquareCheck size={26} /> : <Square size={26} />}
           </Pressable>
           <View className="flex-1 gap-1">
             <Heading
@@ -89,10 +85,10 @@ function HomeView({
             {hasAnyProgress && (
               <Pressable
                 testID="restart-button"
-                className="h-10 w-10 items-center justify-center rounded-full bg-background-100"
+                className="h-10 w-10 items-center justify-center rounded-full bg-background-100 text-primary"
                 onPress={onRestartRoutine}
               >
-                <RotateCcw size={20} color="#6C63FF" />
+                <RotateCcw size={20} />
               </Pressable>
             )}
             {hasWorkouts && (
