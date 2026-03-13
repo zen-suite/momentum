@@ -1,4 +1,4 @@
-import { Dumbbell } from '@/components/icons';
+import { Dumbbell, Plus } from '@/components/icons';
 import { ThemedView } from '@/components/ThemedView';
 import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
@@ -7,7 +7,7 @@ import { useWorkoutLogs } from '@/hooks/useWorkoutLogs';
 import { useWorkouts } from '@/hooks/useWorkouts';
 import { Workout, WorkoutLog } from '@/types/workout';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Plus, Square, SquareCheck } from 'lucide-react-native';
+import { ChevronRight, Square, SquareCheck } from 'lucide-react-native';
 import { Alert, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -113,7 +113,7 @@ function HomeView({
                 className="h-10 w-10 items-center justify-center rounded-full bg-primary"
                 onPress={onAddWorkout}
               >
-                <Plus size={24} color="white" />
+                <Plus size={24} />
               </Pressable>
             )}
           </View>
@@ -121,7 +121,7 @@ function HomeView({
 
         {!hasWorkouts ? (
           <View className="flex-1 items-center justify-center gap-3">
-            <Dumbbell size={72} />
+            <Dumbbell size={72} className="text-primary" />
             <Heading size="lg" className="mt-2">
               No workouts yet
             </Heading>
@@ -132,7 +132,7 @@ function HomeView({
               className="mt-2 flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5"
               onPress={onAddWorkout}
             >
-              <Plus size={20} color="white" />
+              <Plus size={20} />
               <Text className="font-semibold text-secondary-0">
                 Add Workout
               </Text>
