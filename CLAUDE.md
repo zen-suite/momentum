@@ -2,14 +2,21 @@
 
 ## Project
 
-**Key directories:**
+### Key directories
 
 - `app/` — screens and layouts (Expo Router)
 - `app/(tabs)/` — tab screens
+- `app/workout/` — workout detail screens
+- `app/workout-log/` — workout log screens
 - `components/` — shared UI components
-- `constants/theme.ts` — colors and fonts
-- `hooks/` — custom hooks
+- `components/ui/` — base UI primitives (accordion, card, input, etc.)
+- `constants/` — colors, fonts, and other constants
 - `contexts/` — React contexts
+- `hooks/` — custom hooks
+- `providers/` — app-level React providers
+- `storage/` — persistence layer
+- `store/` — state management
+- `types/` — shared TypeScript types
 
 ## Component Rules
 
