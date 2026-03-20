@@ -105,7 +105,7 @@ type IInputProps = React.ComponentProps<typeof UIInput> &
   VariantProps<typeof inputStyle> & { className?: string };
 const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, IInputProps>(
   function Input(
-    { className, variant = 'outline', size = 'md', ...props },
+    { className, variant = 'underlined', size = 'md', ...props },
     ref,
   ) {
     return (

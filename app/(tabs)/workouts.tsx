@@ -1,6 +1,7 @@
 import { ThemedView } from '@/components/ThemedView';
 import { WorkoutCard } from '@/components/WorkoutCard';
 import { Dumbbell } from '@/components/icons';
+import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Input, InputField } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
@@ -68,7 +69,7 @@ export default function WorkoutsScreen() {
         </View>
 
         {showNewWorkoutInput && (
-          <View className="mb-5 rounded-xl border-2 border-primary p-4">
+          <Card className="mb-5 p-4">
             <Input className="mb-3">
               <InputField
                 placeholder="Workout name"
@@ -95,7 +96,7 @@ export default function WorkoutsScreen() {
                 <Text className="font-semibold text-secondary-0">Create</Text>
               </Pressable>
             </View>
-          </View>
+          </Card>
         )}
 
         {workouts.length === 0 ? (
