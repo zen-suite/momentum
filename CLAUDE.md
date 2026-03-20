@@ -106,6 +106,8 @@ function WorkoutCard({ id }: { id: string }) {
 
 Use NativeWind(TailwindCSS) for all styling. No inline style objects except for dynamic values that depend on props/state (e.g., `{ backgroundColor: primaryColor }`).
 
+- Every `lucide` icon you use, must be created in `components/icons` folder and use `wrapIcon`.
+
 ## Theming
 
 Use `useThemeColor` from `@/hooks/useThemeColor` to resolve colors. Use `Colors` and `Fonts` from `@/constants/theme`.

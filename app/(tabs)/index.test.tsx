@@ -53,9 +53,9 @@ describe('HomeScreen', () => {
   });
 
   describe('empty state', () => {
-    it('shows get started heading when no workouts', () => {
+    it('shows KINETIC header', () => {
       renderHome();
-      expect(screen.getByText('Get Started')).toBeTruthy();
+      expect(screen.getByText('KINETIC')).toBeTruthy();
     });
 
     it('shows no workouts message', () => {
@@ -85,6 +85,11 @@ describe('HomeScreen', () => {
       expect(screen.getByText('My Workouts')).toBeTruthy();
     });
 
+    it("shows TODAY'S PLAN label", () => {
+      renderHome();
+      expect(screen.getByText("TODAY'S PLAN")).toBeTruthy();
+    });
+
     it('shows the workout in the list', () => {
       renderHome();
       expect(screen.getByText('Push Day')).toBeTruthy();
@@ -101,15 +106,15 @@ describe('HomeScreen', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/(tabs)/workouts');
     });
 
-    it('navigates to workout-log screen when workout row is pressed', () => {
+    it('navigates to workout-log screen when workout card is pressed', () => {
       renderHome();
-      fireEvent.press(screen.getByText('Push Day'));
+      fireEvent.press(screen.getByTestId('workout-card-1'));
       expect(mockPush).toHaveBeenCalledWith('/workout-log/1');
     });
 
     it('calls toggleWorkoutComplete when checkbox is pressed', () => {
       renderHome();
-      fireEvent.press(screen.getByTestId('checkbox-1'));
+      fireEvent.press(screen.getByTestId('workout-checkbox-1'));
       expect(mockToggleWorkoutComplete).toHaveBeenCalledWith(
         expect.objectContaining({ id: '1', name: 'Push Day' }),
       );
@@ -141,6 +146,12 @@ describe('HomeScreen', () => {
       renderHome();
       fireEvent.press(screen.getByTestId('restart-button'));
       expect(mockRestartRoutine).toHaveBeenCalled();
+    });
+
+    it('opens drawer when hamburger button is pressed', () => {
+      renderHome();
+      fireEvent.press(screen.getByTestId('hamburger-button'));
+      expect(screen.getByTestId('drawer-panel')).toBeTruthy();
     });
   });
 });

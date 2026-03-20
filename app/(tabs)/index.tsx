@@ -1,32 +1,46 @@
-import { Dumbbell, Plus } from '@/components/icons';
+import { SideDrawer } from '@/components/SideDrawer';
 import { ThemedView } from '@/components/ThemedView';
-import { Card } from '@/components/ui/card';
+import { WorkoutProgressCard } from '@/components/WorkoutProgressCard';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { useWorkoutLogs } from '@/hooks/useWorkoutLogs';
 import { useWorkouts } from '@/hooks/useWorkouts';
 import { Workout, WorkoutLog } from '@/types/workout';
+import Dumbbell from '@/components/icons/Dumbbell';
+import Menu from '@/components/icons/Menu';
+import Plus from '@/components/icons/Plus';
+import RotateCcw from '@/components/icons/RotateCcw';
 import { useRouter } from 'expo-router';
-import { ChevronRight, Square, SquareCheck } from 'lucide-react-native';
+import React, { useState } from 'react';
 import { Alert, FlatList, Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+type NavRoute = '/(tabs)/index' | '/(tabs)/workouts';
 
 interface HomeViewProps {
   workouts: Workout[];
   workoutLogs: Record<string, WorkoutLog>;
+  drawerOpen: boolean;
   onAddWorkout: () => void;
   onWorkoutPress: (id: string) => void;
   onWorkoutCheck: (workout: Workout) => void;
   onRestartRoutine: () => void;
+  onOpenDrawer: () => void;
+  onCloseDrawer: () => void;
+  onNavigate: (route: NavRoute) => void;
 }
 
 function HomeView({
   workouts,
   workoutLogs,
+  drawerOpen,
   onAddWorkout,
   onWorkoutPress,
   onWorkoutCheck,
   onRestartRoutine,
+  onOpenDrawer,
+  onCloseDrawer,
+  onNavigate,
 }: HomeViewProps) {
   const hasWorkouts = workouts.length > 0;
   const hasAnyProgress = Object.values(workoutLogs).some(
@@ -38,85 +52,33 @@ function HomeView({
       'Reset Workout Logs',
       'Are you sure you want to reset all workout logs?',
       [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Reset',
-          style: 'destructive',
-          onPress: () => onRestartRoutine(),
-        },
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Reset', style: 'destructive', onPress: onRestartRoutine },
       ],
     );
   };
 
-  const renderFooter = () =>
-    hasAnyProgress ? (
-      <Pressable
-        testID="restart-button"
-        className="mt-1 items-center rounded-lg bg-primary py-3"
-        style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}
-        onPress={handleRestartRoutine}
-      >
-        <Text className="font-semibold text-secondary-0">Reset</Text>
-      </Pressable>
-    ) : null;
-
-  const renderWorkoutItem = ({ item }: { item: Workout }) => {
-    const log = workoutLogs[item.id];
-    const isCompleted = !!log?.completedAt;
-
-    return (
-      <Pressable
-        style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-        onPress={() => onWorkoutPress(item.id)}
-      >
-        <Card className="flex-row items-center rounded-xl p-4">
-          <Pressable
-            testID={`checkbox-${item.id}`}
-            onPress={() => onWorkoutCheck(item)}
-            className="mr-3 text-primary"
-            hitSlop={8}
-          >
-            {isCompleted ? <SquareCheck size={26} /> : <Square size={26} />}
-          </Pressable>
-          <View className="flex-1 gap-1">
-            <Heading
-              size="lg"
-              className={isCompleted ? 'line-through opacity-50' : ''}
-            >
-              {item.name}
-            </Heading>
-            <Text className="text-[13px] opacity-60">
-              {item.exercises.length} exercise
-              {item.exercises.length !== 1 ? 's' : ''}
-            </Text>
-          </View>
-          <ChevronRight size={20} color="#9BA1A6" />
-        </Card>
-      </Pressable>
-    );
-  };
+  const renderWorkoutItem = ({ item }: { item: Workout }) => (
+    <WorkoutProgressCard
+      workout={item}
+      log={workoutLogs[item.id]}
+      onPress={() => onWorkoutPress(item.id)}
+      onCheck={() => onWorkoutCheck(item)}
+    />
+  );
 
   return (
-    <SafeAreaView className="flex-1 bg-background-0 py-4">
+    <SafeAreaView className="flex-1 bg-background-0">
       <ThemedView className="flex-1 px-4">
-        <View className="mb-5 flex-row items-center justify-between">
-          <Heading size="2xl">
-            {hasWorkouts ? 'My Workouts' : 'Get Started'}
-          </Heading>
-          <View className="flex-row items-center gap-2">
-            {hasWorkouts && (
-              <Pressable
-                testID="header-add-button"
-                className="h-10 w-10 items-center justify-center rounded-full bg-primary"
-                onPress={onAddWorkout}
-              >
-                <Plus size={24} />
-              </Pressable>
-            )}
-          </View>
+        {/* Header */}
+        <View className="flex-row items-center justify-between py-4">
+          <Pressable testID="hamburger-button" onPress={onOpenDrawer} hitSlop={8}>
+            <Menu size={24} className="text-primary" />
+          </Pressable>
+          <Text className="text-xl font-bold tracking-widest">KINETIC</Text>
+          <Pressable testID="header-add-button" onPress={onAddWorkout} hitSlop={8}>
+            <Plus size={24} className="text-primary" />
+          </Pressable>
         </View>
 
         {!hasWorkouts ? (
@@ -132,23 +94,49 @@ function HomeView({
               className="mt-2 flex-row items-center gap-2 rounded-xl bg-primary px-6 py-3.5"
               onPress={onAddWorkout}
             >
-              <Plus size={20} />
-              <Text className="font-semibold text-secondary-0">
-                Add Workout
-              </Text>
+              <Plus size={20} className="text-secondary-0" />
+              <Text className="font-semibold text-secondary-0">Add Workout</Text>
             </Pressable>
           </View>
         ) : (
-          <FlatList
-            data={workouts}
-            renderItem={renderWorkoutItem}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={{ gap: 12 }}
-            showsVerticalScrollIndicator={false}
-            ListFooterComponent={renderFooter}
-          />
+          <>
+            <View className="mb-4">
+              <Text className="text-xs font-bold tracking-widest opacity-50 mb-1">
+                {"TODAY'S PLAN"}
+              </Text>
+              <View className="flex-row items-center justify-between">
+                <Heading size="2xl">My Workouts</Heading>
+                {hasAnyProgress && (
+                  <Pressable
+                    testID="restart-button"
+                    className="flex-row items-center gap-1"
+                    onPress={handleRestartRoutine}
+                  >
+                    <RotateCcw size={14} className="text-red-500" />
+                    <Text className="text-sm font-semibold text-red-500">
+                      Restart Routine
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
+            </View>
+
+            <FlatList
+              data={workouts}
+              renderItem={renderWorkoutItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ gap: 12 }}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
         )}
       </ThemedView>
+
+      <SideDrawer
+        isOpen={drawerOpen}
+        onClose={onCloseDrawer}
+        onNavigate={onNavigate}
+      />
     </SafeAreaView>
   );
 }
@@ -156,18 +144,22 @@ function HomeView({
 function withHome(Component: typeof HomeView) {
   return function HomeContainer() {
     const { workouts } = useWorkouts();
-    const { workoutLogs, toggleWorkoutComplete, restartRoutine } =
-      useWorkoutLogs();
+    const { workoutLogs, toggleWorkoutComplete, restartRoutine } = useWorkoutLogs();
     const router = useRouter();
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
     return (
       <Component
         workouts={workouts}
         workoutLogs={workoutLogs}
+        drawerOpen={drawerOpen}
         onAddWorkout={() => router.navigate('/(tabs)/workouts')}
         onWorkoutPress={(id) => router.push(`/workout-log/${id}`)}
         onWorkoutCheck={(workout) => toggleWorkoutComplete(workout)}
         onRestartRoutine={restartRoutine}
+        onOpenDrawer={() => setDrawerOpen(true)}
+        onCloseDrawer={() => setDrawerOpen(false)}
+        onNavigate={(route) => router.navigate(route as never)}
       />
     );
   };

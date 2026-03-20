@@ -1,8 +1,9 @@
+import Dumbbell from '@/components/icons/Dumbbell';
+import ListChecks from '@/components/icons/ListChecks';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -20,23 +21,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+          title: 'LOG',
+          tabBarIcon: ({ color }) => <Dumbbell size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="workouts"
         options={{
-          title: 'Workouts',
-          tabBarIcon: ({ color }) => (
-            <IconSymbol
-              size={28}
-              name="figure.strengthtraining.traditional"
-              color={color}
-            />
-          ),
+          title: 'WORKOUTS',
+          tabBarIcon: ({ color }) => <ListChecks size={24} color={color} />,
         }}
       />
     </Tabs>
