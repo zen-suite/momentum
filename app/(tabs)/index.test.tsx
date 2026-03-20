@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react-native';
 import React from 'react';
+import { Alert } from 'react-native';
 
 jest.mock('@/hooks/useColorScheme', () => ({
   useColorScheme: () => 'light',
@@ -133,6 +134,10 @@ describe('HomeScreen', () => {
         completedAt: new Date(),
         exercises: [],
       };
+      jest.spyOn(Alert, 'alert').mockImplementation((_title, _msg, buttons) => {
+        const resetButton = buttons?.find((b) => b.text === 'Reset');
+        resetButton?.onPress?.();
+      });
       renderHome();
       fireEvent.press(screen.getByTestId('restart-button'));
       expect(mockRestartRoutine).toHaveBeenCalled();

@@ -51,17 +51,17 @@ function HomeView({
     );
   };
 
-  const renderFooter = () => (
-    <Pressable
-      testID="restart-button"
-      className="mt-1 items-center rounded-lg bg-primary py-3 disabled:opacity-20"
-      style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}
-      onPress={handleRestartRoutine}
-      disabled={!hasAnyProgress}
-    >
-      <Text className="font-semibold text-secondary-0">Reset</Text>
-    </Pressable>
-  );
+  const renderFooter = () =>
+    hasAnyProgress ? (
+      <Pressable
+        testID="restart-button"
+        className="mt-1 items-center rounded-lg bg-primary py-3"
+        style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}
+        onPress={handleRestartRoutine}
+      >
+        <Text className="font-semibold text-secondary-0">Reset</Text>
+      </Pressable>
+    ) : null;
 
   const renderWorkoutItem = ({ item }: { item: Workout }) => {
     const log = workoutLogs[item.id];
