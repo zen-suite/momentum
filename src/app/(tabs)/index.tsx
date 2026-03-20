@@ -71,7 +71,7 @@ function HomeView({
     <SafeAreaView className="flex-1 bg-background-0">
       <ThemedView className="flex-1 px-4">
         {/* Header */}
-        <View className="mb-8 flex-row items-center justify-between py-4">
+        <View className="mb-8 flex-row items-center py-4">
           <Pressable
             testID="hamburger-button"
             onPress={onOpenDrawer}
@@ -79,14 +79,17 @@ function HomeView({
           >
             <Menu size={24} className="text-primary" />
           </Pressable>
-          <Text className="text-xl font-bold tracking-widest">KINETIC</Text>
-          <Pressable
-            testID="header-add-button"
-            onPress={onAddWorkout}
-            hitSlop={8}
-          >
-            <Plus size={24} className="text-primary" />
-          </Pressable>
+          <Text className="absolute left-0 right-0 text-center text-xl font-bold tracking-widest">KINETIC</Text>
+          {hasWorkouts && (
+            <Pressable
+              testID="header-add-button"
+              onPress={onAddWorkout}
+              hitSlop={8}
+              className="ml-auto"
+            >
+              <Plus size={24} className="text-primary" />
+            </Pressable>
+          )}
         </View>
 
         {!hasWorkouts ? (
