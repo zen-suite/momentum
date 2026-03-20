@@ -1,17 +1,17 @@
 import { ThemedView } from '@/components/ThemedView';
 import { WorkoutCard } from '@/components/WorkoutCard';
 import { Dumbbell } from '@/components/icons';
+import { Button, ButtonIcon, ButtonText } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Input, InputField } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { useWorkouts } from '@/hooks/useWorkouts';
 import { Workout } from '@/types/workout';
 import { useRouter } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import { useState } from 'react';
-import { Alert, FlatList, Pressable, View } from 'react-native';
+import { Alert, FlatList, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function WorkoutsScreen() {
@@ -19,9 +19,6 @@ export default function WorkoutsScreen() {
   const router = useRouter();
   const [showNewWorkoutInput, setShowNewWorkoutInput] = useState(false);
   const [newWorkoutName, setNewWorkoutName] = useState('');
-
-  const colorScheme = useColorScheme() ?? 'light';
-  const iconOnPrimaryColor = colorScheme === 'dark' ? '#000000' : '#ffffff';
 
   const handleCreateWorkout = () => {
     if (newWorkoutName.trim()) {
@@ -60,12 +57,12 @@ export default function WorkoutsScreen() {
       <ThemedView className="flex-1 px-4">
         <View className="mb-5 mt-4 flex-row items-center justify-between">
           <Heading size="2xl">My Workouts</Heading>
-          <Pressable
-            className="h-10 w-10 items-center justify-center rounded-full bg-primary"
+          <Button
+            className="h-10 w-10 rounded-full p-0"
             onPress={() => setShowNewWorkoutInput(true)}
           >
-            <Plus size={24} color={iconOnPrimaryColor} />
-          </Pressable>
+            <ButtonIcon as={Plus} />
+          </Button>
         </View>
 
         {showNewWorkoutInput && (
@@ -80,21 +77,19 @@ export default function WorkoutsScreen() {
               />
             </Input>
             <View className="flex-row gap-3">
-              <Pressable
-                className="flex-1 items-center rounded-lg border border-primary p-3"
+              <Button
+                className="flex-1"
+                variant="outline"
                 onPress={() => {
                   setShowNewWorkoutInput(false);
                   setNewWorkoutName('');
                 }}
               >
-                <Text>Cancel</Text>
-              </Pressable>
-              <Pressable
-                className="flex-1 items-center rounded-lg bg-primary p-3"
-                onPress={handleCreateWorkout}
-              >
-                <Text className="font-semibold text-secondary-0">Create</Text>
-              </Pressable>
+                <ButtonText>Cancel</ButtonText>
+              </Button>
+              <Button className="flex-1" onPress={handleCreateWorkout}>
+                <ButtonText>Create</ButtonText>
+              </Button>
             </View>
           </Card>
         )}
