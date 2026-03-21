@@ -25,15 +25,15 @@ The palette is rooted in deep obsidian tones, providing a light-absorbing backdr
 
 We use a "Physical Layering" model. Imagine sheets of dark obsidian stacked on one another:
 
-- **Base Layer (`surface` / `#131313`):** The foundation of the app.
-- **Secondary Layer (`surface-container` / `#1F1F1F`):** Standard card backgrounds and interactive zones.
-- **Elevated Layer (`surface-container-high` / `#2A2A2A`):** For active states or modal overlays.
+- **Base Layer (`surface` / `background-0`):** The foundation of the app.
+- **Secondary Layer (`surface-container` / `secondary-100`):** Standard card backgrounds and interactive zones.
+- **Elevated Layer (`surface-container-high` / `secondary-300`):** For active states or modal overlays.
 
 ### The "Glass & Gradient" Rule
 
 To inject a "signature" feel, floating navigation elements or sticky headers should utilize Glassmorphism. Use `surface` at 70% opacity with a `20px` backdrop-blur.
 
-- **Signature Textures:** Apply a subtle linear gradient to the `primary` (White) buttons, transitioning from `#FFFFFF` to `primary-container` (`#D4D4D4`) at a 155-degree angle. This adds a "machined metal" sheen that flat white lacks.
+- **Signature Textures:** Apply a subtle linear gradient to the `primary` (White) buttons, transitioning from `primary-default` to `primary-300` at a 155-degree angle. This adds a "machined metal" sheen that flat white lacks.
 
 ---
 
@@ -79,7 +79,7 @@ If a visual separator is strictly required for accessibility (e.g., inside a com
 ### Buttons
 
 - **Primary:** Solid `primary` (White) fill with `on_primary` (Black) text. 48px-56px height for large touch targets. Corner radius: `lg` (1rem).
-- **Tertiary/Delete:** Transparent background with `tertiary_container` (#FF5545) text and icons.
+- **Tertiary/Delete:** Transparent background with `error-600` text and icons.
 
 ### Kinetic Input Fields
 
@@ -93,7 +93,7 @@ If a visual separator is strictly required for accessibility (e.g., inside a com
 
 ### Additional Component: The "Progress Pill"
 
-A custom component for tracking sets. A series of `secondary_container` (#474746) pills that transition to `primary` (White) when a set is completed.
+A custom component for tracking sets. A series of `secondary-500` pills that transition to `primary-default` (White) when a set is completed.
 
 ---
 
@@ -102,11 +102,11 @@ A custom component for tracking sets. A series of `secondary_container` (#474746
 ### Do
 
 - **Do** use extreme contrast. If a button is white, the text must be absolute black.
-- **Do** utilize the `tertiary` (#FFDAD5) and `error` (#FFB4AB) tones only for destructive actions or critical warnings.
+- **Do** utilize `error-950` and `error-100` tones only for destructive actions or critical warnings.
 - **Do** maximize "negative space." Let the black background breathe to reduce cognitive load during high-intensity training.
 
 ### Don’t
 
 - **Don’t** use shadows to define a card's edge. Use background color shifts.
 - **Don’t** use icons smaller than 24x24px within a 44px touch target.
-- **Don’t** use pure 100% Grey for text. Use `on_surface_variant` (#C6C6C6) to maintain a sophisticated, tinted dark-mode feel.
+- **Don’t** use pure 100% Grey for text. Use `typography-600` to maintain a sophisticated, tinted dark-mode feel.
