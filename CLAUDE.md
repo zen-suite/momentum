@@ -74,6 +74,8 @@ Each domain has an interface (`WorkoutStorage`, `WorkoutLogStorage`, `WorkoutHis
 
 ## Component Rules
 
+- Use `src/components/ui` as founditonal block to build more complex commponents. If you can't find building block, tell me which blocks you need to build.
+
 ### Pure components first
 
 Components must be pure: given the same props, they render the same output. No side effects inside the component body.
