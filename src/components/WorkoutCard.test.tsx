@@ -7,6 +7,29 @@ jest.mock('@/hooks/useColorScheme', () => ({
   useColorScheme: () => 'light',
 }));
 
+jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
+
+jest.mock('react-native-gesture-handler', () => {
+  const { View } = require('react-native');
+  return {
+    GestureDetector: ({ children }: { children: React.ReactNode }) => children,
+    Gesture: {
+      Pan: () => ({
+        activeOffsetX: function () {
+          return this;
+        },
+        onUpdate: function () {
+          return this;
+        },
+        onEnd: function () {
+          return this;
+        },
+      }),
+    },
+    GestureHandlerRootView: View,
+  };
+});
+
 const mockWorkout: Workout = {
   id: '1',
   name: 'Chest Day',
@@ -24,6 +47,7 @@ describe('WorkoutCard', () => {
         workout={mockWorkout}
         onPress={jest.fn()}
         onEdit={jest.fn()}
+        onDelete={jest.fn()}
       />,
     );
     expect(screen.getByText('Chest Day')).toBeTruthy();
@@ -35,6 +59,7 @@ describe('WorkoutCard', () => {
         workout={mockWorkout}
         onPress={jest.fn()}
         onEdit={jest.fn()}
+        onDelete={jest.fn()}
       />,
     );
     expect(screen.getByText('2 exercises')).toBeTruthy();
@@ -46,7 +71,7 @@ describe('WorkoutCard', () => {
       exercises: [{ id: 'e1', name: 'Squat', reps: 10, numberOfSets: 3 }],
     };
     render(
-      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} />,
+      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} onDelete={jest.fn()} />,
     );
     expect(screen.getByText('1 exercise')).toBeTruthy();
   });
@@ -58,6 +83,7 @@ describe('WorkoutCard', () => {
         workout={mockWorkout}
         onPress={onPress}
         onEdit={jest.fn()}
+        onDelete={jest.fn()}
       />,
     );
     fireEvent.press(screen.getByText('Chest Day'));
@@ -71,16 +97,31 @@ describe('WorkoutCard', () => {
         workout={mockWorkout}
         onPress={jest.fn()}
         onEdit={onEdit}
+        onDelete={jest.fn()}
       />,
     );
     fireEvent.press(screen.getByTestId('edit-button'));
     expect(onEdit).toHaveBeenCalledTimes(1);
   });
 
+  it('calls onDelete when delete icon is pressed', () => {
+    const onDelete = jest.fn();
+    render(
+      <WorkoutCard
+        workout={mockWorkout}
+        onPress={jest.fn()}
+        onEdit={jest.fn()}
+        onDelete={onDelete}
+      />,
+    );
+    fireEvent.press(screen.getByTestId('delete-button'));
+    expect(onDelete).toHaveBeenCalledTimes(1);
+  });
+
   it('renders description tag when present', () => {
     const workout: Workout = { ...mockWorkout, description: 'CHEST / SHOULDERS' };
     render(
-      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} />,
+      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} onDelete={jest.fn()} />,
     );
     expect(screen.getByText('CHEST / SHOULDERS')).toBeTruthy();
   });

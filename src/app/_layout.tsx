@@ -13,6 +13,7 @@ import { WorkoutProvider } from '@/providers/WorkoutProvider';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '@/global.css';
 
 export const unstable_settings = {
@@ -23,6 +24,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <GluestackUIProvider mode="system">
       <WorkoutProvider>
         <WorkoutLogProvider>
@@ -45,5 +47,6 @@ export default function RootLayout() {
         </WorkoutLogProvider>
       </WorkoutProvider>
     </GluestackUIProvider>
+    </GestureHandlerRootView>
   );
 }
