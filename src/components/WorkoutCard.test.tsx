@@ -11,8 +11,8 @@ const mockWorkout: Workout = {
   id: '1',
   name: 'Chest Day',
   exercises: [
-    { id: 'e1', name: 'Bench Press', sets: [] },
-    { id: 'e2', name: 'Push Up', sets: [] },
+    { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 },
+    { id: 'e2', name: 'Push Up', reps: 12, numberOfSets: 3 },
   ],
   createdAt: new Date('2024-01-15'),
 };
@@ -23,7 +23,7 @@ describe('WorkoutCard', () => {
       <WorkoutCard
         workout={mockWorkout}
         onPress={jest.fn()}
-        onDelete={jest.fn()}
+        onEdit={jest.fn()}
       />,
     );
     expect(screen.getByText('Chest Day')).toBeTruthy();
@@ -34,16 +34,19 @@ describe('WorkoutCard', () => {
       <WorkoutCard
         workout={mockWorkout}
         onPress={jest.fn()}
-        onDelete={jest.fn()}
+        onEdit={jest.fn()}
       />,
     );
     expect(screen.getByText('2 exercises')).toBeTruthy();
   });
 
   it('renders singular exercise label for one exercise', () => {
-    const workout: Workout = { ...mockWorkout, exercises: [{ id: 'e1', name: 'Squat', sets: [] }] };
+    const workout: Workout = {
+      ...mockWorkout,
+      exercises: [{ id: 'e1', name: 'Squat', reps: 10, numberOfSets: 3 }],
+    };
     render(
-      <WorkoutCard workout={workout} onPress={jest.fn()} onDelete={jest.fn()} />,
+      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} />,
     );
     expect(screen.getByText('1 exercise')).toBeTruthy();
   });
@@ -54,23 +57,31 @@ describe('WorkoutCard', () => {
       <WorkoutCard
         workout={mockWorkout}
         onPress={onPress}
-        onDelete={jest.fn()}
+        onEdit={jest.fn()}
       />,
     );
     fireEvent.press(screen.getByText('Chest Day'));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onDelete when trash icon is pressed', () => {
-    const onDelete = jest.fn();
+  it('calls onEdit when edit icon is pressed', () => {
+    const onEdit = jest.fn();
     render(
       <WorkoutCard
         workout={mockWorkout}
         onPress={jest.fn()}
-        onDelete={onDelete}
+        onEdit={onEdit}
       />,
     );
-    fireEvent.press(screen.getByTestId('delete-button'));
-    expect(onDelete).toHaveBeenCalledTimes(1);
+    fireEvent.press(screen.getByTestId('edit-button'));
+    expect(onEdit).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders description tag when present', () => {
+    const workout: Workout = { ...mockWorkout, description: 'CHEST / SHOULDERS' };
+    render(
+      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} />,
+    );
+    expect(screen.getByText('CHEST / SHOULDERS')).toBeTruthy();
   });
 });

@@ -1,8 +1,27 @@
-# Workout Tracker — Claude Instructions
+# CLAUDE.md
 
-## Project
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-### Key directories
+## Commands
+
+```bash
+npm start          # Start Expo dev server
+npm run ios        # Run on iOS simulator
+npm run android    # Run on Android emulator
+npm run test       # Run all tests
+npm run lint       # Run ESLint
+npm run format     # Format with Prettier
+```
+
+Run a single test file:
+
+```bash
+npx jest path/to/file.test.ts
+```
+
+All source files live under `src/`. The `@/` alias maps to `src/`.
+
+## Key Directories
 
 - `app/` — screens and layouts (Expo Router)
 - `app/(tabs)/` — tab screens
@@ -11,12 +30,47 @@
 - `components/` — shared UI components
 - `components/ui/` — base UI primitives (accordion, card, input, etc.)
 - `constants/` — colors, fonts, and other constants
-- `contexts/` — React contexts
 - `hooks/` — custom hooks
 - `providers/` — app-level React providers
 - `storage/` — persistence layer
-- `store/` — state management
+- `store/` — Zustand state stores
 - `types/` — shared TypeScript types
+
+## Architecture
+
+### Data flow
+
+```
+AsyncStorage
+  → storage/ (load/save, handles Date serialization)
+    → providers/ (useLoadX / usePersistX effect hooks)
+      → store/ (Zustand)
+        → hooks/ (useWorkouts, useWorkoutLogs — selectors)
+          → HOC containers (withWorkouts, etc.)
+            → pure view components (props only)
+```
+
+**Providers** (`WorkoutProvider`, `WorkoutLogProvider`, `WorkoutHistoryProvider`) are mounted in `app/_layout.tsx`. They run `useLoadX` on mount and `usePersistX` whenever the store changes. The `isLoaded` flag on each store guards against writing before the initial load completes.
+
+### State management (Zustand)
+
+Two main stores:
+
+- `useWorkoutStore` — workouts and exercises
+- `useWorkoutLogStore` — current session log (set/exercise completion)
+
+Custom hooks (`useWorkouts`, `useWorkoutLogs`) select from stores using `useShallow()` to avoid unnecessary re-renders. Always use these hooks rather than accessing stores directly from components.
+
+### Storage layer
+
+Each domain has an interface (`WorkoutStorage`, `WorkoutLogStorage`, `WorkoutHistoryStorage`) and an `AsyncStorage*` implementation. Implementations handle Date serialization (stored as strings, revived as `Date` objects). Singleton instances are exported from `storage/index.ts`.
+
+### Routing (Expo Router)
+
+- `app/_layout.tsx` — root Stack navigator, wraps all providers
+- `app/(tabs)/_layout.tsx` — bottom tab navigator
+- Dynamic routes use `useLocalSearchParams<{ id: string }>()` for params and `useRouter()` for navigation
+- Typed routes are enabled (`typedRoutes: true` in app.json)
 
 ## Component Rules
 
@@ -104,15 +158,16 @@ function WorkoutCard({ id }: { id: string }) {
 
 ## Styling
 
-Use NativeWind(TailwindCSS) for all styling. No inline style objects except for dynamic values that depend on props/state (e.g., `{ backgroundColor: primaryColor }`).
+Use NativeWind (TailwindCSS) for all styling. No inline style objects except for dynamic values that depend on props/state (e.g., `{ backgroundColor: primaryColor }`).
 
-- Every `lucide` icon you use, must be created in `components/icons` folder and use `wrapIcon`.
+- Every `lucide` icon you use must be created in `components/icons/` and use `wrapIcon`.
+- Every component must use TailwindCSS classnames if possible and support light and dark mode.
 
 ## Theming
 
 Use `useThemeColor` from `@/hooks/useThemeColor` to resolve colors. Use `Colors` and `Fonts` from `@/constants/theme`.
 
-## File naming
+## File Naming
 
 - Components and contexts: PascalCase — `WorkoutCard.tsx`, `WorkoutContext.tsx`
 - Hooks: camelCase — `useThemeColor.ts`, `useWorkouts.ts`
@@ -124,7 +179,7 @@ Use `useThemeColor` from `@/hooks/useThemeColor` to resolve colors. Use `Colors`
 - No external documentation files unless explicitly requested.
 - Keep components small and focused on a single responsibility.
 - Always follow existing codebase conventions.
-- Alway write unit tests for new components/logic you implemented.
-- Never use `any` in typescript
-- After implementing any request that changes code, always run `npm run test` and fix failed tests
-- When asked to commit, only write a short message with conventional commits. Don't include Claude coauthor.
+- Always write unit tests for new components/logic you implement.
+- Never use `any` in TypeScript.
+- After implementing any request that changes code, always run `npm run test` and fix failed tests.
+- When asked to commit, only write a short message with conventional commits. Don't include Claude co-author.

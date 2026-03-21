@@ -2,34 +2,41 @@ import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { Workout } from '@/types/workout';
-import { Trash2 } from '@/components/icons';
+import GripVertical from '@/components/icons/GripVertical';
+import Pencil from '@/components/icons/Pencil';
 import { Pressable, View } from 'react-native';
 
 interface WorkoutCardProps {
   workout: Workout;
   onPress: () => void;
-  onDelete: () => void;
+  onEdit: () => void;
 }
 
-export function WorkoutCard({ workout, onPress, onDelete }: WorkoutCardProps) {
+export function WorkoutCard({ workout, onPress, onEdit }: WorkoutCardProps) {
   return (
-    <Card>
-      <Pressable
-        className="flex-row items-center justify-between"
-        onPress={onPress}
-      >
+    <Card variant="filled" className="rounded-2xl">
+      <Pressable className="flex-row items-center gap-4" onPress={onPress}>
+        <GripVertical size={20} className="text-typography-400" />
         <View className="flex-1">
           <Heading size="lg">{workout.name}</Heading>
-          <Text className="mt-1 text-sm opacity-70">
-            {workout.exercises.length} exercise
-            {workout.exercises.length !== 1 ? 's' : ''}
-          </Text>
-          <Text className="mt-1 text-xs opacity-50">
-            {new Date(workout.createdAt).toLocaleDateString()}
-          </Text>
+          <View className="mt-2 flex-row flex-wrap gap-2">
+            <View className="rounded bg-background-200 px-2 py-1">
+              <Text className="text-xs font-semibold uppercase tracking-widest">
+                {workout.exercises.length}{' '}
+                {workout.exercises.length === 1 ? 'exercise' : 'exercises'}
+              </Text>
+            </View>
+            {workout.description ? (
+              <View className="rounded bg-background-200 px-2 py-1">
+                <Text className="text-xs font-semibold uppercase tracking-widest">
+                  {workout.description}
+                </Text>
+              </View>
+            ) : null}
+          </View>
         </View>
-        <Pressable className="p-2" onPress={onDelete} testID="delete-button">
-          <Trash2 size={24} color="red" />
+        <Pressable testID="edit-button" onPress={onEdit} hitSlop={8}>
+          <Pencil size={18} className="text-typography-400" />
         </Pressable>
       </Pressable>
     </Card>
