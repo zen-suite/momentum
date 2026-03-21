@@ -110,6 +110,6 @@ describe('WorkoutLogScreen', () => {
   it('shows empty state when workout has no exercises', () => {
     mockGetWorkoutById.mockReturnValue({ ...mockWorkout, exercises: [] });
     renderScreen();
-    expect(screen.getByText('No exercises yet')).toBeTruthy();
+    expect(screen.getByText('No Exercises Yet')).toBeTruthy();
   });
 });

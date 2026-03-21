@@ -1,5 +1,6 @@
 import { Circle, CircleCheck, Dumbbell } from '@/components/icons';
 import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -12,7 +13,7 @@ import {
   Workout,
   WorkoutLog,
 } from '@/types/workout';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, ScrollView, View } from 'react-native';
 
 interface WorkoutLogViewProps {
@@ -172,6 +173,7 @@ function WorkoutLogView({
   const totalCount = workout.exercises.length;
   const colorScheme = useColorScheme() ?? 'light';
   const isDark = colorScheme === 'dark';
+  const router = useRouter();
 
   const getExerciseLog = (exerciseId: string): ExerciseLog | undefined =>
     log?.exercises.find((e) => e.exercise.id === exerciseId);
@@ -198,19 +200,39 @@ function WorkoutLogView({
             </Heading>
           </View>
 
-          <View className="mb-5">
-            <Text className="text-sm font-semibold opacity-60">
-              {completedCount} / {totalCount} exercises completed
-            </Text>
-          </View>
+          {workout.exercises.length && (
+            <View className="mb-5">
+              <Text className="text-sm font-semibold opacity-60">
+                {completedCount} / {totalCount} exercises completed
+              </Text>
+            </View>
+          )}
 
           {workout.exercises.length === 0 ? (
-            <View className="mt-10 items-center gap-3">
-              <Dumbbell size={64} color={isDark ? '#9BA1A6' : '#9BA1A6'} />
-              <Heading size="md">No exercises yet</Heading>
-              <Text className="text-center text-sm opacity-70">
-                Add exercises in the Workouts tab
-              </Text>
+            <View className="mt-10 items-center gap-6">
+              <View
+                className={`items-center justify-center rounded-full bg-background-100 p-6`}
+              >
+                <Dumbbell size={64} />
+              </View>
+              <View className="items-center gap-3">
+                <Heading size="2xl" className="font-black uppercase">
+                  No Exercises Yet
+                </Heading>
+                <Text className="text-center text-sm opacity-70">
+                  This workout is looking a bit light. Head over to the Workouts
+                  tab to add exercises and build your routine.
+                </Text>
+              </View>
+              <Button
+                onPress={() => router.push(`/workout/${workout.id}`)}
+                className="h-fit rounded-lg px-6 py-5"
+                size="lg"
+              >
+                <Text className="font-bold uppercase text-typography-0">
+                  Add Exercise
+                </Text>
+              </Button>
             </View>
           ) : (
             <View className="gap-6">
