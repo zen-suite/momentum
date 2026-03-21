@@ -160,14 +160,9 @@ function WorkoutCard({ id }: { id: string }) {
 
 ## Styling
 
-Use NativeWind (TailwindCSS) for all styling. No inline style objects except for dynamic values that depend on props/state (e.g., `{ backgroundColor: primaryColor }`).
-
+- Use NativeWind (TailwindCSS) for all styling. No inline style objects except for dynamic values that depend on props/state (e.g., `{ backgroundColor: primaryColor }`). Must support both light mode and dark mode.
 - Every `lucide` icon you use must be created in `components/icons/` and use `wrapIcon`.
-- Every component must use TailwindCSS classnames if possible and support light and dark mode.
-
-## Theming
-
-Use `useThemeColor` from `@/hooks/useThemeColor` to resolve colors. Use `Colors` and `Fonts` from `@/constants/theme`.
+- Follow [@DESIGN.md](./DESIGN.md) philosophy when design screen or component.
 
 ## File Naming
 
