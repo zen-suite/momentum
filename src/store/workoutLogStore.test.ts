@@ -95,7 +95,7 @@ describe('workoutLogStore', () => {
 
       const log = result.current.getLog('w1');
       const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
-      expect(exerciseLog?.sets.every((s) => !!s.completedAt)).toBe(true);
+      expect(exerciseLog?.completedSets).toBe(3);
     });
 
     it('clears all sets when an exercise is toggled off', () => {
@@ -111,10 +111,10 @@ describe('workoutLogStore', () => {
 
       const log = result.current.getLog('w1');
       const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
-      expect(exerciseLog?.sets.every((s) => !s.completedAt)).toBe(true);
+      expect(exerciseLog?.completedSets).toBe(0);
     });
 
-    it('preserves already-completed sets when completing exercise', () => {
+    it('sets completedSets to numberOfSets when exercise is completed', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workout = makeWorkout({
         exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 }],
@@ -123,18 +123,13 @@ describe('workoutLogStore', () => {
       act(() => {
         result.current.completeSet(workout, 'e1', 0);
       });
-
-      const beforeDate = result.current.getLog('w1')!.exercises[0].sets[0].completedAt;
-
       act(() => {
         result.current.completeExercise(workout, 'e1');
       });
 
       const log = result.current.getLog('w1');
       const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
-      expect(exerciseLog?.sets[0].completedAt).toEqual(beforeDate);
-      expect(exerciseLog?.sets[1].completedAt).toBeInstanceOf(Date);
-      expect(exerciseLog?.sets[2].completedAt).toBeInstanceOf(Date);
+      expect(exerciseLog?.completedSets).toBe(3);
     });
 
     it('clears workout completedAt when an exercise is toggled off', () => {
@@ -155,7 +150,7 @@ describe('workoutLogStore', () => {
   });
 
   describe('completeSet', () => {
-    it('marks a specific set as completed', () => {
+    it('marks sets up to and including setIndex as completed', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workout = makeWorkoutWithExercises();
 
@@ -165,8 +160,7 @@ describe('workoutLogStore', () => {
 
       const log = result.current.getLog('w1');
       const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
-      expect(exerciseLog?.sets[1].completedAt).toBeInstanceOf(Date);
-      expect(exerciseLog?.sets[0].completedAt).toBeUndefined();
+      expect(exerciseLog?.completedSets).toBe(2);
     });
 
     it('auto-completes the exercise when all sets are done', () => {
@@ -196,7 +190,56 @@ describe('workoutLogStore', () => {
 
       const log = result.current.getLog('w1');
       const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
-      expect(exerciseLog?.sets[0].completedAt).toBeUndefined();
+      expect(exerciseLog?.completedSets).toBe(0);
+    });
+
+    it('auto-completes exercise when numberOfSets increased after log creation', () => {
+      const { result } = renderHook(() => useWorkoutLogStore());
+      const workoutV1 = makeWorkout({
+        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 }],
+      });
+      act(() => {
+        result.current.completeSet(workoutV1, 'e1', 0);
+      });
+
+      // Simulate user increasing numberOfSets to 3
+      const workoutV2 = makeWorkout({
+        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 }],
+      });
+      act(() => {
+        result.current.completeSet(workoutV2, 'e1', 1);
+        result.current.completeSet(workoutV2, 'e1', 2);
+      });
+
+      const log = result.current.getLog('w1');
+      const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
+      expect(exerciseLog?.completedSets).toBe(3);
+      expect(exerciseLog?.completedAt).toBeInstanceOf(Date);
+    });
+
+    it('can complete sets for an exercise added after log creation', () => {
+      const { result } = renderHook(() => useWorkoutLogStore());
+      const workoutV1 = makeWorkout({
+        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 }],
+      });
+      act(() => {
+        result.current.completeSet(workoutV1, 'e1', 0);
+      });
+
+      // Simulate user adding a new exercise to the workout
+      const workoutV2 = makeWorkout({
+        exercises: [
+          { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 },
+          { id: 'e2', name: 'Squat', reps: 8, numberOfSets: 2 },
+        ],
+      });
+      act(() => {
+        result.current.completeSet(workoutV2, 'e2', 0);
+      });
+
+      const log = result.current.getLog('w1');
+      const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e2');
+      expect(exerciseLog?.completedSets).toBe(1);
     });
   });
 

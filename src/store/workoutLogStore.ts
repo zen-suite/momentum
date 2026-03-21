@@ -7,27 +7,26 @@ import { ExerciseLog, Workout, WorkoutLog } from '@/types/workout';
 
 const generateId = () => uuidv7();
 
-function migrateExerciseLog(e: ExerciseLog): ExerciseLog {
-  if (e.sets && e.sets.length > 0) return e;
-  return {
-    ...e,
-    sets: Array.from({ length: e.exercise.numberOfSets }, (_, i) => ({
-      setIndex: i,
-      completedAt: e.completedAt,
-    })),
-  };
-}
-
 function getOrCreateLog(
   logs: Record<string, WorkoutLog>,
   workout: Workout,
 ): WorkoutLog {
   const existing = logs[workout.id];
   if (existing) {
-    return {
-      ...existing,
-      exercises: existing.exercises.map(migrateExerciseLog),
-    };
+    const existingMap = new Map(existing.exercises.map((e) => [e.exercise.id, e]));
+    const syncedExercises = workout.exercises.map((exercise) => {
+      const existingExLog = existingMap.get(exercise.id);
+      if (!existingExLog) {
+        return {
+          id: generateId(),
+          exercise,
+          completedSets: 0,
+          completedAt: undefined as Date | undefined,
+        };
+      }
+      return { ...existingExLog, exercise };
+    });
+    return { ...existing, exercises: syncedExercises };
   }
   return {
     id: workout.id,
@@ -36,10 +35,7 @@ function getOrCreateLog(
       (e): ExerciseLog => ({
         id: generateId(),
         exercise: e,
-        sets: Array.from({ length: e.numberOfSets }, (_, i) => ({
-          setIndex: i,
-          completedAt: undefined,
-        })),
+        completedSets: 0,
         completedAt: undefined,
       }),
     ),
@@ -72,18 +68,12 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
       const now = new Date();
       const updatedExercises = log.exercises.map((e) => {
         if (e.exercise.id !== exerciseId) return e;
-        const sets = e.sets ?? [];
-        const isSetDone = !!sets.find((s) => s.setIndex === setIndex)
-          ?.completedAt;
-        const updatedSets = sets.map((s) =>
-          s.setIndex === setIndex
-            ? { ...s, completedAt: isSetDone ? undefined : now }
-            : s,
-        );
-        const allSetsDone = updatedSets.every((s) => !!s.completedAt);
+        const newCompletedSets =
+          setIndex < e.completedSets ? setIndex : setIndex + 1;
+        const allSetsDone = newCompletedSets === e.exercise.numberOfSets;
         return {
           ...e,
-          sets: updatedSets,
+          completedSets: newCompletedSets,
           completedAt: allSetsDone ? now : undefined,
         };
       });
@@ -110,10 +100,7 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
           ? {
               ...e,
               completedAt: isCompleted ? undefined : now,
-              sets: e.sets.map((s) => ({
-                ...s,
-                completedAt: isCompleted ? undefined : s.completedAt ?? now,
-              })),
+              completedSets: isCompleted ? 0 : e.exercise.numberOfSets,
             }
           : e,
       );

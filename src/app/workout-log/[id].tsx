@@ -9,7 +9,6 @@ import { useWorkouts } from '@/hooks/useWorkouts';
 import {
   Exercise,
   ExerciseLog,
-  SetLog,
   Workout,
   WorkoutLog,
 } from '@/types/workout';
@@ -28,17 +27,17 @@ interface WorkoutLogViewProps {
 }
 
 function SetRow({
-  setLog,
+  isCompleted,
   setNumber,
   exercise,
   onComplete,
 }: {
-  setLog: SetLog | undefined;
+  isCompleted: boolean;
   setNumber: number;
   exercise: Exercise;
   onComplete: () => void;
 }) {
-  const isDone = !!setLog?.completedAt;
+  const isDone = isCompleted;
   const colorScheme = useColorScheme() ?? 'light';
   const isDark = colorScheme === 'dark';
 
@@ -149,7 +148,7 @@ function ExerciseRow({
               />
             )}
             <SetRow
-              setLog={exerciseLog?.sets?.find((s) => s.setIndex === i)}
+              isCompleted={i < (exerciseLog?.completedSets ?? 0)}
               setNumber={i + 1}
               exercise={exercise}
               onComplete={() => onCompleteSet(i)}
