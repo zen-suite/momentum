@@ -103,7 +103,7 @@ function HomeView({
           <>
             <View className="mb-4">
               <View className="flex-row items-center justify-between">
-                <Heading size="2xl">My Workouts</Heading>
+                <Heading size="2xl">Routine</Heading>
                 {hasAnyProgress && (
                   <Pressable
                     testID="restart-button"

@@ -46,12 +46,30 @@ jest.mock('@/components/ui/drawer', () => {
   const mockReact = require('react');
   const { Pressable, ScrollView, View: mockView } = require('react-native');
   return {
-    Drawer: ({ isOpen, children }: { isOpen: boolean; children: React.ReactNode }) =>
-      isOpen ? mockReact.createElement(mockReact.Fragment, null, children) : null,
-    DrawerBackdrop: ({ testID, onPress }: { testID?: string; onPress?: () => void }) =>
-      mockReact.createElement(Pressable, { testID, onPress }),
-    DrawerContent: ({ testID, children }: { testID?: string; children: React.ReactNode }) =>
-      mockReact.createElement(mockView, { testID }, children),
+    Drawer: ({
+      isOpen,
+      children,
+    }: {
+      isOpen: boolean;
+      children: React.ReactNode;
+    }) =>
+      isOpen
+        ? mockReact.createElement(mockReact.Fragment, null, children)
+        : null,
+    DrawerBackdrop: ({
+      testID,
+      onPress,
+    }: {
+      testID?: string;
+      onPress?: () => void;
+    }) => mockReact.createElement(Pressable, { testID, onPress }),
+    DrawerContent: ({
+      testID,
+      children,
+    }: {
+      testID?: string;
+      children: React.ReactNode;
+    }) => mockReact.createElement(mockView, { testID }, children),
     DrawerBody: ({ children }: { children: React.ReactNode }) =>
       mockReact.createElement(ScrollView, null, children),
     DrawerFooter: ({ children }: { children: React.ReactNode }) =>
@@ -116,9 +134,9 @@ describe('HomeScreen', () => {
       });
     });
 
-    it('shows My Workouts heading', () => {
+    it('shows Routine heading', () => {
       renderHome();
-      expect(screen.getByText('My Workouts')).toBeTruthy();
+      expect(screen.getByText('Routine')).toBeTruthy();
     });
 
     it('shows the workout in the list', () => {

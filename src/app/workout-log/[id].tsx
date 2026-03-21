@@ -55,10 +55,10 @@ function SetRow({
       className={`flex-row items-center gap-3 px-4 py-3 ${isDone ? (isDark ? 'bg-white/10' : 'bg-black/10') : ''}`}
     >
       <View
-        className={`h-7 w-7 items-center justify-center rounded-full ${isDone ? 'bg-white' : (isDark ? 'bg-white/20' : 'bg-black/20')}`}
+        className={`h-7 w-7 items-center justify-center rounded-full ${isDone ? 'bg-white' : isDark ? 'bg-white/20' : 'bg-black/20'}`}
       >
         <Text
-          className={`text-xs font-bold ${isDone ? 'text-black' : (isDark ? 'text-white' : 'text-black')}`}
+          className={`text-xs font-bold ${isDone ? 'text-black' : isDark ? 'text-white' : 'text-black'}`}
         >
           {setNumber}
         </Text>
@@ -75,7 +75,10 @@ function SetRow({
           size={22}
         />
       ) : (
-        <Circle className={isDark ? 'text-white/40' : 'text-black/30'} size={22} />
+        <Circle
+          className={isDark ? 'text-white/40' : 'text-black/30'}
+          size={22}
+        />
       )}
     </Pressable>
   );
@@ -117,12 +120,18 @@ function ExerciseRow({
               size={24}
             />
           ) : (
-            <Circle className={isDark ? 'text-white/40' : 'text-black/40'} size={24} />
+            <Circle
+              className={isDark ? 'text-white/40' : 'text-black/40'}
+              size={24}
+            />
           )}
         </Pressable>
         <View className="flex-1" />
         {exercise.numberOfSets > 0 && (
-          <Text className="text-xs font-bold uppercase opacity-50" testID={`sets-label-${exercise.id}`}>
+          <Text
+            className="text-xs font-bold uppercase opacity-50"
+            testID={`sets-label-${exercise.id}`}
+          >
             {exercise.numberOfSets} Sets
           </Text>
         )}
