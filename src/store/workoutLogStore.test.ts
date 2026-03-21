@@ -85,6 +85,58 @@ describe('workoutLogStore', () => {
       expect(exerciseLog?.completedAt).toBeUndefined();
     });
 
+    it('completes all sets when an exercise is completed', () => {
+      const { result } = renderHook(() => useWorkoutLogStore());
+      const workout = makeWorkoutWithExercises();
+
+      act(() => {
+        result.current.completeExercise(workout, 'e1');
+      });
+
+      const log = result.current.getLog('w1');
+      const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
+      expect(exerciseLog?.sets.every((s) => !!s.completedAt)).toBe(true);
+    });
+
+    it('clears all sets when an exercise is toggled off', () => {
+      const { result } = renderHook(() => useWorkoutLogStore());
+      const workout = makeWorkoutWithExercises();
+
+      act(() => {
+        result.current.completeExercise(workout, 'e1');
+      });
+      act(() => {
+        result.current.completeExercise(workout, 'e1');
+      });
+
+      const log = result.current.getLog('w1');
+      const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
+      expect(exerciseLog?.sets.every((s) => !s.completedAt)).toBe(true);
+    });
+
+    it('preserves already-completed sets when completing exercise', () => {
+      const { result } = renderHook(() => useWorkoutLogStore());
+      const workout = makeWorkout({
+        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 }],
+      });
+
+      act(() => {
+        result.current.completeSet(workout, 'e1', 0);
+      });
+
+      const beforeDate = result.current.getLog('w1')!.exercises[0].sets[0].completedAt;
+
+      act(() => {
+        result.current.completeExercise(workout, 'e1');
+      });
+
+      const log = result.current.getLog('w1');
+      const exerciseLog = log!.exercises.find((e) => e.exercise.id === 'e1');
+      expect(exerciseLog?.sets[0].completedAt).toEqual(beforeDate);
+      expect(exerciseLog?.sets[1].completedAt).toBeInstanceOf(Date);
+      expect(exerciseLog?.sets[2].completedAt).toBeInstanceOf(Date);
+    });
+
     it('clears workout completedAt when an exercise is toggled off', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workout = makeWorkoutWithExercises();

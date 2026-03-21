@@ -107,7 +107,14 @@ export const useWorkoutLogStore = create<WorkoutLogState>((set, get) => ({
       const isCompleted = !!target?.completedAt;
       const updatedExercises = log.exercises.map((e) =>
         e.exercise.id === exerciseId
-          ? { ...e, completedAt: isCompleted ? undefined : now }
+          ? {
+              ...e,
+              completedAt: isCompleted ? undefined : now,
+              sets: e.sets.map((s) => ({
+                ...s,
+                completedAt: isCompleted ? undefined : s.completedAt ?? now,
+              })),
+            }
           : e,
       );
       const allDone = updatedExercises.every((e) => !!e.completedAt);
