@@ -1,0 +1,11 @@
+export { default as ChevronRight } from './ChevronRight';
+export { default as Circle } from './Circle';
+export { default as CircleCheck } from './CircleCheck';
+export { default as Code } from './Code';
+export { default as Dumbbell } from './Dumbbell';
+export { default as GripVertical } from './GripVertical';
+export { default as Home } from './Home';
+export { default as Pencil } from './Pencil';
+export { default as Plus } from './Plus';
+export { default as Send } from './Send';
+export { default as Trash2 } from './Trash2';
