@@ -117,7 +117,9 @@ describe('workoutLogStore', () => {
     it('sets completedSets to numberOfSets when exercise is completed', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workout = makeWorkout({
-        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 }],
+        exercises: [
+          { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 },
+        ],
       });
 
       act(() => {
@@ -166,7 +168,9 @@ describe('workoutLogStore', () => {
     it('auto-completes the exercise when all sets are done', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workout = makeWorkout({
-        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 2 }],
+        exercises: [
+          { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 2 },
+        ],
       });
 
       act(() => {
@@ -196,7 +200,9 @@ describe('workoutLogStore', () => {
     it('auto-completes exercise when numberOfSets increased after log creation', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workoutV1 = makeWorkout({
-        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 }],
+        exercises: [
+          { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 },
+        ],
       });
       act(() => {
         result.current.completeSet(workoutV1, 'e1', 0);
@@ -204,7 +210,9 @@ describe('workoutLogStore', () => {
 
       // Simulate user increasing numberOfSets to 3
       const workoutV2 = makeWorkout({
-        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 }],
+        exercises: [
+          { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 },
+        ],
       });
       act(() => {
         result.current.completeSet(workoutV2, 'e1', 1);
@@ -220,7 +228,9 @@ describe('workoutLogStore', () => {
     it('can complete sets for an exercise added after log creation', () => {
       const { result } = renderHook(() => useWorkoutLogStore());
       const workoutV1 = makeWorkout({
-        exercises: [{ id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 }],
+        exercises: [
+          { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 },
+        ],
       });
       act(() => {
         result.current.completeSet(workoutV1, 'e1', 0);

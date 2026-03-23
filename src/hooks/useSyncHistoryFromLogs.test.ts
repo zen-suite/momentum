@@ -60,7 +60,10 @@ beforeEach(() => {
 
 describe('useSyncHistoryFromLogs', () => {
   it('does not write to storage when no logs have completions', () => {
-    useWorkoutLogStore.setState({ workoutLogs: { log1: incompleteLog }, isLoaded: true });
+    useWorkoutLogStore.setState({
+      workoutLogs: { log1: incompleteLog },
+      isLoaded: true,
+    });
 
     renderHook(() => useSyncHistoryFromLogs());
 
@@ -104,7 +107,12 @@ describe('useSyncHistoryFromLogs', () => {
       exercises: [
         {
           id: 'e1',
-          exercise: { id: 'ex1', name: 'Bench Press', reps: 8, numberOfSets: 3 },
+          exercise: {
+            id: 'ex1',
+            name: 'Bench Press',
+            reps: 8,
+            numberOfSets: 3,
+          },
           sets: [],
           completedAt: new Date(),
         },

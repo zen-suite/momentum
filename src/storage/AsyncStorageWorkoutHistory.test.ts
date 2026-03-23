@@ -57,7 +57,9 @@ describe('AsyncStorageWorkoutHistory.load', () => {
     expect(result).toHaveLength(2);
     expect(result[0].id).toBe('log1');
     expect(result[0].completedAt).toBeInstanceOf(Date);
-    expect(result[0].completedAt!.toISOString()).toBe('2024-01-01T11:00:00.000Z');
+    expect(result[0].completedAt!.toISOString()).toBe(
+      '2024-01-01T11:00:00.000Z',
+    );
     expect(result[1].completedAt).toBeUndefined();
   });
 
@@ -67,10 +69,14 @@ describe('AsyncStorageWorkoutHistory.load', () => {
     const result = await storage.load();
 
     expect(result[0].workout.createdAt).toBeInstanceOf(Date);
-    expect(result[0].workout.createdAt.toISOString()).toBe('2024-01-01T10:00:00.000Z');
+    expect(result[0].workout.createdAt.toISOString()).toBe(
+      '2024-01-01T10:00:00.000Z',
+    );
     expect(result[0].workout.completedAt).toBeUndefined();
     expect(result[1].workout.completedAt).toBeInstanceOf(Date);
-    expect(result[1].workout.completedAt!.toISOString()).toBe('2024-01-02T11:00:00.000Z');
+    expect(result[1].workout.completedAt!.toISOString()).toBe(
+      '2024-01-02T11:00:00.000Z',
+    );
   });
 
   it('deserializes exercise completedAt as Date instances', async () => {
@@ -79,7 +85,9 @@ describe('AsyncStorageWorkoutHistory.load', () => {
     const result = await storage.load();
 
     expect(result[0].exercises[0].completedAt).toBeInstanceOf(Date);
-    expect(result[0].exercises[0].completedAt!.toISOString()).toBe('2024-01-01T10:30:00.000Z');
+    expect(result[0].exercises[0].completedAt!.toISOString()).toBe(
+      '2024-01-01T10:30:00.000Z',
+    );
   });
 });
 

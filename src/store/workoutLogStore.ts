@@ -13,7 +13,9 @@ function getOrCreateLog(
 ): WorkoutLog {
   const existing = logs[workout.id];
   if (existing) {
-    const existingMap = new Map(existing.exercises.map((e) => [e.exercise.id, e]));
+    const existingMap = new Map(
+      existing.exercises.map((e) => [e.exercise.id, e]),
+    );
     const syncedExercises = workout.exercises.map((exercise) => {
       const existingExLog = existingMap.get(exercise.id);
       if (!existingExLog) {

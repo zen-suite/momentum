@@ -20,6 +20,7 @@ interface WorkoutCardProps {
   onPress: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  drag?: () => void;
 }
 
 export function WorkoutCard({
@@ -27,6 +28,7 @@ export function WorkoutCard({
   onPress,
   onEdit,
   onDelete,
+  drag,
 }: WorkoutCardProps) {
   const translateX = useSharedValue(0);
 
@@ -71,12 +73,16 @@ export function WorkoutCard({
       <GestureDetector gesture={panGesture}>
         <Animated.View style={animatedStyle}>
           <Card variant="filled" className="rounded-l-2xl rounded-r-none">
-            <Pressable
-              className="flex-row items-center gap-4"
-              onPress={onPress}
-            >
-              <GripVertical size={20} className="text-typography-400" />
-              <View className="flex-1">
+            <View className="flex-row items-center gap-4">
+              <Pressable
+                testID="drag-handle"
+                onLongPress={drag}
+                delayLongPress={150}
+                hitSlop={8}
+              >
+                <GripVertical size={20} className="text-typography-400" />
+              </Pressable>
+              <Pressable className="flex-1" onPress={onPress}>
                 <Heading size="lg">{workout.name}</Heading>
                 <View className="mt-2 flex-row flex-wrap gap-2">
                   <View className="rounded bg-background-200 px-2 py-1">
@@ -95,8 +101,8 @@ export function WorkoutCard({
                     </View>
                   ) : null}
                 </View>
-              </View>
-            </Pressable>
+              </Pressable>
+            </View>
           </Card>
         </Animated.View>
       </GestureDetector>

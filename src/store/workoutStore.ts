@@ -13,6 +13,7 @@ interface WorkoutState {
   addWorkout: (name: string) => Workout;
   updateWorkout: (id: string, updates: Partial<Workout>) => void;
   deleteWorkout: (id: string) => void;
+  reorderWorkouts: (workouts: Workout[]) => void;
   addExerciseToWorkout: (workoutId: string, exerciseName: string) => void;
   updateExercise: (
     workoutId: string,
@@ -54,6 +55,10 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     set((state) => ({
       workouts: state.workouts.filter((w) => w.id !== id),
     }));
+  },
+
+  reorderWorkouts: (workouts: Workout[]) => {
+    set({ workouts });
   },
 
   addExerciseToWorkout: (workoutId: string, exerciseName: string) => {

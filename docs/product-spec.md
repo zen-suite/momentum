@@ -202,14 +202,14 @@ Opened when the user taps a workout row on the Home Screen. Displays that workou
 Example
 
 ☐ Bench Press
-   ☐ 10 reps · 40 kg
-   ☐ 10 reps · 40 kg
-   ☐ 8 reps · 45 kg
+☐ 10 reps · 40 kg
+☐ 10 reps · 40 kg
+☐ 8 reps · 45 kg
 
 ☐ Pull Up
-   ☐ 10 reps
-   ☐ 8 reps
-   ☐ 6 reps
+☐ 10 reps
+☐ 8 reps
+☐ 6 reps
 
 User interactions
 
@@ -228,7 +228,8 @@ Example
 Upper Body
 Leg Day
 Push Day
-+ Add Workout
+
+- Add Workout
 
 User interactions
 
@@ -245,12 +246,13 @@ Opened from the Workouts List screen. Allows the user to edit a workout and mana
 
 Example
 
-[Upper Body]         ← editable name field
+[Upper Body] ← editable name field
 
-Bench Press          [delete]
-Pull Up              [delete]
-Squat                [delete]
-+ Add Exercise
+Bench Press [delete]
+Pull Up [delete]
+Squat [delete]
+
+- Add Exercise
 
 User interactions
 

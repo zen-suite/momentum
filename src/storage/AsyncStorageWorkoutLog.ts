@@ -8,7 +8,10 @@ type SerializedExerciseLog = Omit<ExerciseLog, 'completedAt'> & {
   completedAt?: string;
 };
 
-type SerializedWorkoutLog = Omit<WorkoutLog, 'exercises' | 'completedAt' | 'workout'> & {
+type SerializedWorkoutLog = Omit<
+  WorkoutLog,
+  'exercises' | 'completedAt' | 'workout'
+> & {
   workout: Omit<WorkoutLog['workout'], 'createdAt' | 'completedAt'> & {
     createdAt: string;
     completedAt?: string;

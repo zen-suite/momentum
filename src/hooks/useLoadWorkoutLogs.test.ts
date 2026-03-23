@@ -18,7 +18,12 @@ const mockLoad = workoutLogStorage.load as jest.Mock;
 const mockLogs: Record<string, WorkoutLog> = {
   w1: {
     id: 'w1',
-    workout: { id: 'w1', name: 'Push Day', exercises: [], createdAt: new Date() },
+    workout: {
+      id: 'w1',
+      name: 'Push Day',
+      exercises: [],
+      createdAt: new Date(),
+    },
     exercises: [],
     completedAt: undefined,
   },

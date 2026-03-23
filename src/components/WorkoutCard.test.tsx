@@ -7,7 +7,9 @@ jest.mock('@/hooks/useColorScheme', () => ({
   useColorScheme: () => 'light',
 }));
 
-jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
+jest.mock('react-native-reanimated', () =>
+  require('react-native-reanimated/mock'),
+);
 
 jest.mock('react-native-gesture-handler', () => {
   const { View } = require('react-native');
@@ -71,7 +73,12 @@ describe('WorkoutCard', () => {
       exercises: [{ id: 'e1', name: 'Squat', reps: 10, numberOfSets: 3 }],
     };
     render(
-      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} onDelete={jest.fn()} />,
+      <WorkoutCard
+        workout={workout}
+        onPress={jest.fn()}
+        onEdit={jest.fn()}
+        onDelete={jest.fn()}
+      />,
     );
     expect(screen.getByText('1 exercise')).toBeTruthy();
   });
@@ -119,9 +126,17 @@ describe('WorkoutCard', () => {
   });
 
   it('renders description tag when present', () => {
-    const workout: Workout = { ...mockWorkout, description: 'CHEST / SHOULDERS' };
+    const workout: Workout = {
+      ...mockWorkout,
+      description: 'CHEST / SHOULDERS',
+    };
     render(
-      <WorkoutCard workout={workout} onPress={jest.fn()} onEdit={jest.fn()} onDelete={jest.fn()} />,
+      <WorkoutCard
+        workout={workout}
+        onPress={jest.fn()}
+        onEdit={jest.fn()}
+        onDelete={jest.fn()}
+      />,
     );
     expect(screen.getByText('CHEST / SHOULDERS')).toBeTruthy();
   });

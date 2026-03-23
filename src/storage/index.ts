@@ -10,5 +10,7 @@ export type { WorkoutLogStorage as IWorkoutLogStorage };
 export type { WorkoutHistoryStorage as IWorkoutHistoryStorage };
 
 export const workoutStorage: WorkoutStorage = new AsyncStorageWorkout();
-export const workoutLogStorage: WorkoutLogStorage = new AsyncStorageWorkoutLog();
-export const workoutHistoryStorage: WorkoutHistoryStorage = new AsyncStorageWorkoutHistory();
+export const workoutLogStorage: WorkoutLogStorage =
+  new AsyncStorageWorkoutLog();
+export const workoutHistoryStorage: WorkoutHistoryStorage =
+  new AsyncStorageWorkoutHistory();

@@ -24,7 +24,12 @@ const mockWorkout = {
   ],
 };
 
-const mockLog = { id: 'w1', workout: mockWorkout, exercises: [], completedAt: undefined };
+const mockLog = {
+  id: 'w1',
+  workout: mockWorkout,
+  exercises: [],
+  completedAt: undefined,
+};
 const mockCompleteExercise = jest.fn();
 const mockCompleteSet = jest.fn();
 const mockGetLog = jest.fn(() => mockLog);

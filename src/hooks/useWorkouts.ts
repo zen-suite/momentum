@@ -9,6 +9,7 @@ export function useWorkouts() {
       addWorkout: state.addWorkout,
       updateWorkout: state.updateWorkout,
       deleteWorkout: state.deleteWorkout,
+      reorderWorkouts: state.reorderWorkouts,
       addExerciseToWorkout: state.addExerciseToWorkout,
       updateExercise: state.updateExercise,
       deleteExercise: state.deleteExercise,

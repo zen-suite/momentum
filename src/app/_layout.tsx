@@ -26,30 +26,39 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <ErrorBoundary>
-    <GluestackUIProvider mode="system">
-      <WorkoutProvider>
-        <WorkoutLogProvider>
-        <WorkoutHistoryProvider>
-        <ThemeProvider
-          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-        >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="modal"
-              options={{ presentation: 'modal', title: 'Modal' }}
-            />
-            <Stack.Screen name="workout/[id]" options={{ headerShown: true }} />
-            <Stack.Screen name="workout-log/[id]" options={{ headerShown: true }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
-        </WorkoutHistoryProvider>
-        </WorkoutLogProvider>
-      </WorkoutProvider>
-    </GluestackUIProvider>
-    </ErrorBoundary>
+      <ErrorBoundary>
+        <GluestackUIProvider mode="system">
+          <WorkoutProvider>
+            <WorkoutLogProvider>
+              <WorkoutHistoryProvider>
+                <ThemeProvider
+                  value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+                >
+                  <Stack>
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="modal"
+                      options={{ presentation: 'modal', title: 'Modal' }}
+                    />
+                    <Stack.Screen
+                      name="workout/[id]"
+                      options={{ headerShown: true }}
+                    />
+                    <Stack.Screen
+                      name="workout-log/[id]"
+                      options={{ headerShown: true }}
+                    />
+                  </Stack>
+                  <StatusBar style="auto" />
+                </ThemeProvider>
+              </WorkoutHistoryProvider>
+            </WorkoutLogProvider>
+          </WorkoutProvider>
+        </GluestackUIProvider>
+      </ErrorBoundary>
     </GestureHandlerRootView>
   );
 }

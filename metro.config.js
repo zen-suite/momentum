@@ -10,4 +10,6 @@ const testConfig = {
   },
 };
 
-module.exports = withNativeWind(mergeConfig(config, testConfig), { input: './src/global.css' });
+module.exports = withNativeWind(mergeConfig(config, testConfig), {
+  input: './src/global.css',
+});

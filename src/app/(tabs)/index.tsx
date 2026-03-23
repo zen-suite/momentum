@@ -128,7 +128,10 @@ function HomeView({
               contentContainerStyle={{ gap: 12 }}
               showsVerticalScrollIndicator={false}
               ListFooterComponent={
-                <Card className="mt-6 items-center rounded-2xl p-6" variant="filled">
+                <Card
+                  className="mt-6 items-center rounded-2xl p-6"
+                  variant="filled"
+                >
                   <WorkoutQuote />
                 </Card>
               }
