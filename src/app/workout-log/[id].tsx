@@ -1,5 +1,6 @@
 import { Circle, CircleCheck, Dumbbell } from '@/components/icons';
 import { ThemedView } from '@/components/ThemedView';
+import { WorkoutStats } from '@/components/WorkoutStats';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
@@ -166,12 +167,6 @@ function WorkoutLogView({
   onCompleteExercise,
   onCompleteSet,
 }: WorkoutLogViewProps) {
-  const completedCount = log
-    ? log.exercises.filter((e) => !!e.completedAt).length
-    : 0;
-  const totalCount = workout.exercises.length;
-  const colorScheme = useColorScheme() ?? 'light';
-  const isDark = colorScheme === 'dark';
   const router = useRouter();
 
   const getExerciseLog = (exerciseId: string): ExerciseLog | undefined =>
@@ -201,9 +196,10 @@ function WorkoutLogView({
 
           {workout.exercises.length > 0 && (
             <View className="mb-5">
-              <Text className="text-sm font-semibold opacity-60">
-                {completedCount} / {totalCount} exercises completed
-              </Text>
+              <WorkoutStats
+                exercises={workout.exercises}
+                exerciseLogs={log?.exercises}
+              />
             </View>
           )}
 

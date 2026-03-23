@@ -255,15 +255,6 @@ export default function WorkoutDetailScreen() {
                 </Heading>
               </Pressable>
             )}
-            <Text className="mt-2 text-xs font-bold uppercase tracking-widest opacity-40">
-              {workout.exercises.length}{' '}
-              {workout.exercises.length === 1 ? 'Exercise' : 'Exercises'}
-            </Text>
-
-            {/* Stats row */}
-            {workout.exercises.length > 0 && (
-              <WorkoutStats exercises={workout.exercises} />
-            )}
           </View>
 
           {/* Add exercise CTA */}
@@ -335,6 +326,7 @@ export default function WorkoutDetailScreen() {
           ) : (
             <View className="gap-4">
               {workout.exercises.map(renderExercise)}
+              <WorkoutStats exercises={workout.exercises} />
             </View>
           )}
         </ScrollView>

@@ -64,9 +64,10 @@ describe('WorkoutLogScreen', () => {
     expect(screen.getByText('Squat')).toBeTruthy();
   });
 
-  it('shows progress counter', () => {
+  it('shows workout stats with completion rate', () => {
     renderScreen();
-    expect(screen.getByText('0 / 2 exercises completed')).toBeTruthy();
+    expect(screen.getByText('Completion')).toBeTruthy();
+    expect(screen.getByText('Volume')).toBeTruthy();
   });
 
   it('shows workout name in header', () => {

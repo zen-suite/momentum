@@ -1,43 +1,107 @@
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
-import { Exercise } from '@/types/workout';
+import { Exercise, ExerciseLog } from '@/types/workout';
 import { View } from 'react-native';
+
+function formatStat(value: number): string {
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+  }
+  return String(value);
+}
 
 interface WorkoutStatsProps {
   exercises: Exercise[];
+  exerciseLogs?: ExerciseLog[];
 }
 
-export function WorkoutStats({ exercises }: WorkoutStatsProps) {
+export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
   const totalReps = exercises.reduce(
     (sum, e) => sum + e.reps * e.numberOfSets,
     0,
   );
   const totalSets = exercises.reduce((sum, e) => sum + e.numberOfSets, 0);
   const estMinutes = Math.round((totalReps * 3 + totalSets * 90) / 60);
+  const totalVolume = Math.round(
+    exercises.reduce(
+      (sum, e) => sum + (e.weight ?? 0) * e.reps * e.numberOfSets,
+      0,
+    ),
+  );
+
+  const completionRate =
+    exerciseLogs != null && totalSets > 0
+      ? Math.min(
+          100,
+          Math.round(
+            (exerciseLogs.reduce((sum, log) => sum + log.completedSets, 0) /
+              totalSets) *
+              100,
+          ),
+        )
+      : null;
 
   return (
-    <View className="mt-5 flex-row gap-3">
-      <Card variant="filled" className="flex-1 rounded-2xl px-4 py-4">
-        <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
-          Total Reps
-        </Text>
-        <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
-          {totalReps}
-        </Text>
-      </Card>
-      <Card variant="filled" className="flex-1 rounded-2xl px-4 py-4">
-        <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
-          Est. Time
-        </Text>
-        <View className="flex-row items-baseline gap-1">
+    <View className="mt-5 gap-3">
+      <View className="flex-row gap-3">
+        <Card variant="filled" className="flex-1 rounded-2xl px-4 py-4">
+          <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
+            Volume
+          </Text>
+          <View className="flex-row items-baseline gap-1">
+            <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
+              {formatStat(totalVolume)}
+            </Text>
+            <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
+              kg
+            </Text>
+          </View>
+        </Card>
+        <Card variant="filled" className="flex-1 rounded-2xl px-4 py-4">
+          <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
+            Total Reps
+          </Text>
           <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
-            {estMinutes}
+            {formatStat(totalReps)}
           </Text>
-          <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
-            min
+        </Card>
+        <Card variant="filled" className="flex-1 rounded-2xl px-4 py-4">
+          <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
+            Est. Time
           </Text>
-        </View>
-      </Card>
+          <View className="flex-row items-baseline gap-1">
+            <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
+              {formatStat(estMinutes)}
+            </Text>
+            <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
+              min
+            </Text>
+          </View>
+        </Card>
+      </View>
+      {completionRate !== null && (
+        <Card variant="filled" className="rounded-2xl px-4 py-4">
+          <View className="mb-3 flex-row items-center justify-between">
+            <Text className="text-xs font-bold uppercase tracking-widest opacity-50">
+              Completion
+            </Text>
+            <View className="flex-row items-baseline gap-0.5">
+              <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
+                {completionRate}
+              </Text>
+              <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
+                %
+              </Text>
+            </View>
+          </View>
+          <View className="h-2 overflow-hidden rounded-full bg-background-100">
+            <View
+              className="h-full rounded-full bg-typography-950"
+              style={{ width: `${completionRate}%` }}
+            />
+          </View>
+        </Card>
+      )}
     </View>
   );
 }
