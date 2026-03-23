@@ -255,11 +255,8 @@ export default function WorkoutDetailScreen() {
               </Pressable>
             )}
             <Text className="mt-2 text-xs font-bold uppercase tracking-widest opacity-40">
-              {new Date(workout.createdAt).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })}
+              {workout.exercises.length}{' '}
+              {workout.exercises.length === 1 ? 'Exercise' : 'Exercises'}
             </Text>
           </View>
 
