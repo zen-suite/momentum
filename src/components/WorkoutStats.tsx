@@ -29,6 +29,8 @@ export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
     ),
   );
 
+  // Completion rate = total completed sets across all exercises / total planned sets.
+  // Capped at 100% in case completed sets exceed planned sets.
   const completionRate =
     exerciseLogs != null && totalSets > 0
       ? Math.min(
@@ -43,16 +45,19 @@ export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
 
   return (
     <View className="mt-5 gap-3">
+      <Text className="text-xs font-bold uppercase tracking-widest opacity-50">
+        Stats
+      </Text>
       <View className="flex-row gap-3">
         <Card variant="filled" className="flex-1 rounded-2xl px-4 py-4">
           <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
             Volume
           </Text>
           <View className="flex-row items-baseline gap-1">
-            <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
+            <Text className="text-base font-black">
               {formatStat(totalVolume)}
             </Text>
-            <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
+            <Text className="text-xs font-bold uppercase tracking-widest opacity-50">
               kg
             </Text>
           </View>
@@ -61,19 +66,17 @@ export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
           <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
             Total Reps
           </Text>
-          <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
-            {formatStat(totalReps)}
-          </Text>
+          <Text className="text-base font-black">{formatStat(totalReps)}</Text>
         </Card>
         <Card variant="filled" className="flex-1 rounded-2xl px-4 py-4">
           <Text className="mb-1 text-xs font-bold uppercase tracking-widest opacity-50">
             Est. Time
           </Text>
           <View className="flex-row items-baseline gap-1">
-            <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
+            <Text className="text-base font-black">
               {formatStat(estMinutes)}
             </Text>
-            <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
+            <Text className="text-xs font-bold uppercase tracking-widest opacity-50">
               min
             </Text>
           </View>
@@ -86,9 +89,7 @@ export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
               Completion
             </Text>
             <View className="flex-row items-baseline gap-0.5">
-              <Text style={{ fontSize: 36, fontWeight: '800', lineHeight: 40 }}>
-                {completionRate}
-              </Text>
+              <Text className="text-base font-black">{completionRate}</Text>
               <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
                 %
               </Text>
