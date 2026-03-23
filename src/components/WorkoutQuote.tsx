@@ -1,4 +1,5 @@
 import { Text } from '@/components/ui/text';
+import { cn } from '@/utils/styles';
 import { useMemo } from 'react';
 
 const QUOTES = [
@@ -11,14 +12,18 @@ const QUOTES = [
   'Discipline is choosing between what you want now and what you want most.',
 ];
 
-export function WorkoutQuote() {
+interface WorkoutQuoteProps {
+  className?: string;
+}
+
+export function WorkoutQuote({ className }: WorkoutQuoteProps) {
   const quote = useMemo(
     () => QUOTES[Math.floor(Math.random() * QUOTES.length)],
     [],
   );
 
   return (
-    <Text className="text-center text-sm italic opacity-60">
+    <Text className={cn('text-center text-sm italic opacity-60', className)}>
       &quot;{quote}&quot;
     </Text>
   );

@@ -1,34 +1,16 @@
 import { Circle, CircleCheck, Dumbbell } from '@/components/icons';
 import { ThemedView } from '@/components/ThemedView';
-import { WorkoutStats } from '@/components/WorkoutStats';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
+import { WorkoutQuote } from '@/components/WorkoutQuote';
+import { WorkoutStats } from '@/components/WorkoutStats';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useWorkoutLogs } from '@/hooks/useWorkoutLogs';
 import { useWorkouts } from '@/hooks/useWorkouts';
-import { useMemo } from 'react';
-import {
-  Exercise,
-  ExerciseLog,
-  Workout,
-  WorkoutLog,
-} from '@/types/workout';
+import { Exercise, ExerciseLog, Workout, WorkoutLog } from '@/types/workout';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Pressable, ScrollView, View } from 'react-native';
-
-const MOTIVATION_QUOTES = [
-  'No shortcuts. No excuses. Just work.',
-  'Your only competition is who you were yesterday.',
-  'Pain is temporary. Giving up lasts forever.',
-  'Push harder than yesterday if you want a different tomorrow.',
-  'The body achieves what the mind believes.',
-  'Champions train. Losers complain.',
-  'Sweat is just fat crying.',
-  'Make yourself proud.',
-  'Every rep counts.',
-  'You are stronger than you think.',
-];
 
 interface WorkoutLogViewProps {
   workout: Workout;
@@ -182,10 +164,6 @@ function WorkoutLogView({
   onCompleteSet,
 }: WorkoutLogViewProps) {
   const router = useRouter();
-  const quote = useMemo(
-    () => MOTIVATION_QUOTES[Math.floor(Math.random() * MOTIVATION_QUOTES.length)],
-    [],
-  );
 
   const getExerciseLog = (exerciseId: string): ExerciseLog | undefined =>
     log?.exercises.find((e) => e.exercise.id === exerciseId);
@@ -210,7 +188,7 @@ function WorkoutLogView({
             <Heading size="3xl" className="font-black leading-tight">
               {workout.name}
             </Heading>
-            <Text className="mt-2 text-sm italic opacity-50">{quote}</Text>
+            <WorkoutQuote className="mt-2 text-left text-sm italic opacity-50" />
           </View>
 
           {workout.exercises.length === 0 ? (

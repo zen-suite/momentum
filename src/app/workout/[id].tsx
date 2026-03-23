@@ -253,6 +253,10 @@ export default function WorkoutDetailScreen() {
                 <Heading size="3xl" className="font-extrabold">
                   {workout.name}
                 </Heading>
+                <Text className="mt-1 text-xs font-bold uppercase tracking-widest opacity-50">
+                  {workout.exercises.length}{' '}
+                  {workout.exercises.length === 1 ? 'exercise' : 'exercises'}
+                </Text>
               </Pressable>
             )}
           </View>
