@@ -11,7 +11,7 @@ import { cn } from '@/utils/styles';
 const tabClassName = (focused: boolean) =>
   cn({
     'text-typography-950': focused,
-    'text-typography-600': !focused,
+    'text-typography-400': !focused,
   });
 
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
@@ -19,7 +19,7 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
     <Text
       className={cn('text-xs', {
         'font-semibold text-typography-950': focused,
-        'font-normal text-typography-600': !focused,
+        'font-normal text-typography-400': !focused,
       })}
     >
       {label}
