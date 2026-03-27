@@ -46,9 +46,20 @@ body {
 }
 
 .nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--primary);
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-links {
@@ -136,71 +147,13 @@ body {
   transform: translateY(-1px);
 }
 
-/* PHONE MOCK */
 .hero-visual {
   flex: 0 0 auto;
 }
 
-.phone-frame {
-  width: 260px;
-  height: 520px;
-  background: var(--surface);
-  border-radius: 2.5rem;
-  padding: 2rem 1.5rem;
-  box-shadow:
-    0 12px 64px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
-  display: flex;
-  flex-direction: column;
-}
-
-.phone-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.mock-label {
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  margin-top: 1.25rem;
-}
-
-.mock-metric {
-  font-size: 3.5rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  margin-top: 0.25rem;
-}
-
-.mock-metric span {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-left: 0.25rem;
-}
-
-.mock-sets {
-  display: flex;
-  gap: 0.375rem;
-  margin-top: 0.75rem;
-}
-
-.pill {
-  width: 32px;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--surface-high);
-  transition: background 0.2s;
-}
-
-.pill.done {
-  background: var(--primary);
+.hero-visual img {
+  width: 350px;
+  height: auto;
 }
 
 /* FEATURES */
