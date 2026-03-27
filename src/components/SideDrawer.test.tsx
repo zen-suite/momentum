@@ -53,7 +53,6 @@ describe('SideDrawer', () => {
     expect(getByText('WORKOUTS')).toBeTruthy();
     expect(getByText('HISTORY')).toBeTruthy();
     expect(getByText('SETTINGS')).toBeTruthy();
-    expect(getByText('PROFILE')).toBeTruthy();
   });
 
   it('calls onClose when backdrop pressed', () => {

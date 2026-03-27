@@ -14,7 +14,7 @@ import { cn } from '@/utils/styles';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-type NavRoute = '/(tabs)/index' | '/(tabs)/workouts';
+type NavRoute = '/(tabs)/index' | '/(tabs)/workouts' | '/settings';
 
 interface NavItem {
   label: string;
@@ -39,7 +39,12 @@ const NAV_ITEMS: NavItem[] = [
     pathname: '/workouts',
   },
   { label: 'HISTORY', icon: History, route: null, pathname: null },
-  { label: 'SETTINGS', icon: Settings, route: null, pathname: null },
+  {
+    label: 'SETTINGS',
+    icon: Settings,
+    route: '/settings',
+    pathname: '/settings',
+  },
 ];
 
 export function SideDrawer({

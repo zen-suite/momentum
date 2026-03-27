@@ -7,6 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { Input, InputField } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useSettings } from '@/hooks/useSettings';
 import { useWorkouts } from '@/hooks/useWorkouts';
 import { Exercise } from '@/types/workout';
 import { Stack, useLocalSearchParams } from 'expo-router';
@@ -33,6 +34,7 @@ export default function WorkoutDetailScreen() {
   const [editingExerciseName, setEditingExerciseName] = useState('');
   const [weightInputs, setWeightInputs] = useState<Record<string, string>>({});
 
+  const { settings } = useSettings();
   const colorScheme = useColorScheme() ?? 'light';
   const textColor = colorScheme === 'dark' ? '#ECEDEE' : '#11181C';
 
@@ -46,7 +48,11 @@ export default function WorkoutDetailScreen() {
 
   const handleAddExercise = () => {
     if (newExerciseName.trim()) {
-      addExerciseToWorkout(workout.id, newExerciseName.trim());
+      addExerciseToWorkout(workout.id, newExerciseName.trim(), {
+        reps: settings.exerciseDefaults.reps,
+        numberOfSets: settings.exerciseDefaults.sets,
+        weight: settings.exerciseDefaults.weight,
+      });
       setNewExerciseName('');
       setShowAddExercise(false);
     }
