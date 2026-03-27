@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="108" height="108">
+  <defs>
+    <linearGradient id="markSheen" x1="0.18" y1="1" x2="0.82" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#C8C8D8"/>
+      <stop offset="48%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E0E0EC"/>
+    </linearGradient>
+    <filter id="markGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#FFFFFF" flood-opacity="0.22"/>
+    </filter>
+    <filter id="tipGlow" x="-120%" y="-120%" width="340%" height="340%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#FFFFFF" flood-opacity="0.60"/>
+    </filter>
+  </defs>
+  <!-- Chevron mark scaled to 108x108, mark occupies ~72dp safe zone centered -->
+  <polyline
+    points="21,83 54,25 87,83"
+    fill="none"
+    stroke="url(#markSheen)"
+    stroke-width="12"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#markGlow)"
+  />
+  <circle cx="54" cy="25" r="5" fill="#FFFFFF" filter="url(#tipGlow)"/>
+  <circle cx="54" cy="25" r="2.2" fill="#07070A"/>
+</svg>

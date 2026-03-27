@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Deep obsidian background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A1A20"/>
+      <stop offset="100%" stop-color="#07070A"/>
+    </linearGradient>
+
+    <!-- Machined-metal sheen on the mark (155deg) -->
+    <linearGradient id="markSheen" x1="0.18" y1="1" x2="0.82" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#C8C8D8"/>
+      <stop offset="48%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E0E0EC"/>
+    </linearGradient>
+
+    <!-- Ambient glow on the mark -->
+    <filter id="markGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="28" flood-color="#FFFFFF" flood-opacity="0.22"/>
+    </filter>
+
+    <!-- Tip glow -->
+    <filter id="tipGlow" x="-120%" y="-120%" width="340%" height="340%">
+      <feDropShadow dx="0" dy="0" stdDeviation="22" flood-color="#FFFFFF" flood-opacity="0.60"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="200" fill="url(#bg)"/>
+
+  <!--
+    Momentum mark: a single bold upward-sweeping chevron/arrow.
+    Two thick arms converging at the top-center apex, angled strongly
+    upward to communicate acceleration and forward motion.
+
+    Left arm:  from bottom-left (220, 780) up to apex (512, 240)
+    Right arm: from bottom-right (804, 780) up to apex (512, 240)
+
+    Rendered as a single thick open-V polyline so the arms share the tip.
+  -->
+  <polyline
+    points="204,790 512,234 820,790"
+    fill="none"
+    stroke="url(#markSheen)"
+    stroke-width="112"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#markGlow)"
+  />
+
+  <!-- Apex highlight dot — hero element celebrating the peak -->
+  <circle cx="512" cy="234" r="44" fill="#FFFFFF" filter="url(#tipGlow)"/>
+  <circle cx="512" cy="234" r="20" fill="#07070A"/>
+</svg>
