@@ -1,14 +1,14 @@
 import SettingsContainer from '@/components/SettingsView';
-import { ThemedView } from '@/components/ThemedView';
+import { TabScreenLayout } from '@/components/TabScreenLayout';
 import { Stack } from 'expo-router';
 
 export default function SettingsScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: '', headerBackTitle: 'Back' }} />
-      <ThemedView className="flex-1">
+      <Stack.Screen options={{ headerShown: false }} />
+      <TabScreenLayout>
         <SettingsContainer />
-      </ThemedView>
+      </TabScreenLayout>
     </>
   );
 }

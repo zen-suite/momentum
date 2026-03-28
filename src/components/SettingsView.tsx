@@ -90,7 +90,7 @@ export function SettingsView({
 }: SettingsViewProps) {
   return (
     <ScrollView
-      contentContainerStyle={{ padding: 24, paddingBottom: 64 }}
+      contentContainerStyle={{ paddingBottom: 64 }}
       showsVerticalScrollIndicator={false}
     >
       {/* Page title */}
