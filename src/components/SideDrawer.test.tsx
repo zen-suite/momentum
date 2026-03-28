@@ -101,14 +101,14 @@ describe('SideDrawer', () => {
     expect(getByText('WORKOUTS')).toBeTruthy();
   });
 
-  it('only calls onClose (not onNavigate) for items without a route', () => {
+  it('calls onNavigate and onClose when pressing HISTORY', () => {
     const onNavigate = jest.fn();
     const onClose = jest.fn();
     const { getByText } = render(
       <SideDrawer isOpen={true} onClose={onClose} onNavigate={onNavigate} />,
     );
     fireEvent.press(getByText('HISTORY'));
-    expect(onNavigate).not.toHaveBeenCalled();
+    expect(onNavigate).toHaveBeenCalledWith('/(tabs)/history');
     expect(onClose).toHaveBeenCalled();
   });
 });

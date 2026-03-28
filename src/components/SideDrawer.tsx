@@ -16,7 +16,11 @@ import Constants from 'expo-constants';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-type NavRoute = '/(tabs)/index' | '/(tabs)/workouts' | '/settings';
+type NavRoute =
+  | '/(tabs)'
+  | '/(tabs)/workouts'
+  | '/(tabs)/history'
+  | '/settings';
 
 interface NavItem {
   label: string;
@@ -33,14 +37,19 @@ interface SideDrawerProps {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'LOG', icon: ListChecks, route: '/(tabs)/index', pathname: '/' },
+  { label: 'LOGS', icon: ListChecks, route: '/(tabs)', pathname: '/' },
   {
     label: 'WORKOUTS',
     icon: Dumbbell,
     route: '/(tabs)/workouts',
     pathname: '/workouts',
   },
-  { label: 'HISTORY', icon: History, route: null, pathname: null },
+  {
+    label: 'HISTORY',
+    icon: History,
+    route: '/(tabs)/history',
+    pathname: '/history',
+  },
   {
     label: 'SETTINGS',
     icon: Settings,
