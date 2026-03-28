@@ -1,4 +1,5 @@
 import Dumbbell from '@/components/icons/Dumbbell';
+import History from '@/components/icons/History';
 import ListChecks from '@/components/icons/ListChecks';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -66,6 +67,18 @@ export default function TabLayout() {
           ),
           tabBarLabel: ({ focused }) => (
             <TabLabel label="Workouts" focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: 'History',
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon={History} focused={focused} />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <TabLabel label="History" focused={focused} />
           ),
         }}
       />

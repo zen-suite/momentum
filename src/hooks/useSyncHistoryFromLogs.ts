@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 
 import { workoutHistoryStorage } from '@/storage';
+import { useWorkoutHistoryStore } from '@/store/workoutHistoryStore';
 import { useWorkoutLogStore } from '@/store/workoutLogStore';
 
 export function useSyncHistoryFromLogs() {
   const workoutLogs = useWorkoutLogStore((state) => state.workoutLogs);
+  const setHistory = useWorkoutHistoryStore((state) => state.setHistory);
 
   useEffect(() => {
     const logsToSync = Object.values(workoutLogs).filter(
@@ -16,7 +18,9 @@ export function useSyncHistoryFromLogs() {
       const existing = await workoutHistoryStorage.load();
       const map = new Map(existing.map((l) => [l.id, l]));
       logsToSync.forEach((log) => map.set(log.id, log));
-      await workoutHistoryStorage.save(Array.from(map.values()));
+      const merged = Array.from(map.values());
+      await workoutHistoryStorage.save(merged);
+      setHistory(merged);
     })();
-  }, [workoutLogs]);
+  }, [workoutLogs, setHistory]);
 }
