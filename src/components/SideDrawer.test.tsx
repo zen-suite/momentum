@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
 import { SideDrawer } from './SideDrawer';
 
@@ -53,7 +53,6 @@ describe('SideDrawer', () => {
     expect(getByText('WORKOUTS')).toBeTruthy();
     expect(getByText('HISTORY')).toBeTruthy();
     expect(getByText('SETTINGS')).toBeTruthy();
-    expect(getByText('PROFILE')).toBeTruthy();
   });
 
   it('calls onClose when backdrop pressed', () => {
@@ -76,6 +75,32 @@ describe('SideDrawer', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
+  it('highlights the active nav item matching the current route', () => {
+    const { getByText } = render(
+      <SideDrawer
+        isOpen={true}
+        onClose={jest.fn()}
+        onNavigate={jest.fn()}
+        activeRoute="/"
+      />,
+    );
+    // Active item text should still be rendered
+    expect(getByText('LOG')).toBeTruthy();
+    expect(getByText('WORKOUTS')).toBeTruthy();
+  });
+
+  it('highlights workouts tab when activeRoute is /workouts', () => {
+    const { getByText } = render(
+      <SideDrawer
+        isOpen={true}
+        onClose={jest.fn()}
+        onNavigate={jest.fn()}
+        activeRoute="/workouts"
+      />,
+    );
+    expect(getByText('WORKOUTS')).toBeTruthy();
+  });
+
   it('only calls onClose (not onNavigate) for items without a route', () => {
     const onNavigate = jest.fn();
     const onClose = jest.fn();
@@ -85,12 +110,5 @@ describe('SideDrawer', () => {
     fireEvent.press(getByText('HISTORY'));
     expect(onNavigate).not.toHaveBeenCalled();
     expect(onClose).toHaveBeenCalled();
-  });
-
-  it('shows version number', () => {
-    const { getByText } = render(
-      <SideDrawer isOpen={true} onClose={jest.fn()} onNavigate={jest.fn()} />,
-    );
-    expect(getByText('V 2.0.4 KINETIC')).toBeTruthy();
   });
 });

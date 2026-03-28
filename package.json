@@ -11,7 +11,8 @@
     "lint": "expo lint",
     "test": "jest",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "website": "npx serve website"
   },
   "jest": {
     "preset": "jest-expo",

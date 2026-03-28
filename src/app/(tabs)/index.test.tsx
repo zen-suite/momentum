@@ -10,6 +10,7 @@ const mockNavigate = jest.fn();
 const mockPush = jest.fn();
 jest.mock('expo-router', () => ({
   useRouter: () => ({ navigate: mockNavigate, push: mockPush }),
+  usePathname: () => '/',
 }));
 
 const mockWorkouts: {
@@ -96,9 +97,9 @@ describe('HomeScreen', () => {
   });
 
   describe('empty state', () => {
-    it('shows KINETIC header', () => {
+    it('shows Momentum header', () => {
       renderHome();
-      expect(screen.getByText('KINETIC')).toBeTruthy();
+      expect(screen.getByText('Momentum')).toBeTruthy();
     });
 
     it('shows no workouts message', () => {
@@ -147,12 +148,6 @@ describe('HomeScreen', () => {
     it('does not show Create Your First Workout CTA', () => {
       renderHome();
       expect(screen.queryByTestId('create-first-workout-button')).toBeNull();
-    });
-
-    it('navigates to workouts tab when header add button is pressed', () => {
-      renderHome();
-      fireEvent.press(screen.getByTestId('header-add-button'));
-      expect(mockNavigate).toHaveBeenCalledWith('/(tabs)/workouts');
     });
 
     it('navigates to workout-log screen when workout card is pressed', () => {

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="logo-bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A1A20" />
+      <stop offset="100%" stop-color="#07070A" />
+    </linearGradient>
+    <linearGradient id="logo-sheen" x1="0.18" y1="1" x2="0.82" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#C8C8D8" />
+      <stop offset="48%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E0E0EC" />
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="200" fill="url(#logo-bg)" />
+  <polyline
+    points="204,790 512,234 820,790"
+    fill="none"
+    stroke="url(#logo-sheen)"
+    stroke-width="112"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="512" cy="234" r="44" fill="#FFFFFF" />
+  <circle cx="512" cy="234" r="20" fill="#07070A" />
+</svg>

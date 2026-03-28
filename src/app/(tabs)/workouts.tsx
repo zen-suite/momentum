@@ -1,7 +1,6 @@
 import { CreateWorkoutForm } from '@/components/CreateWorkoutForm';
-import { ThemedView } from '@/components/ThemedView';
+import { TabScreenLayout } from '@/components/TabScreenLayout';
 import { WorkoutCard } from '@/components/WorkoutCard';
-import Menu from '@/components/icons/Menu';
 import Plus from '@/components/icons/Plus';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
@@ -10,12 +9,11 @@ import { useWorkouts } from '@/hooks/useWorkouts';
 import { Workout } from '@/types/workout';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import DraggableFlatList, {
   RenderItemParams,
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function WorkoutsScreen() {
   const { workouts, addWorkout, deleteWorkout, reorderWorkouts } =
@@ -67,75 +65,53 @@ export default function WorkoutsScreen() {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background-0">
-      <ThemedView className="flex-1 px-4">
-        {/* Header */}
-        <View className="mb-4 flex-row items-center py-4">
-          <Pressable hitSlop={8}>
-            <Menu size={24} className="text-primary" />
-          </Pressable>
-          <Text
-            className="absolute left-0 right-0 text-center text-xl font-bold tracking-widest"
-            pointerEvents="none"
-          >
-            KINETIC
-          </Text>
-          <Pressable
-            onPress={() => setShowNewWorkoutInput(true)}
-            hitSlop={8}
-            className="ml-auto"
-          >
-            <Plus size={24} className="text-primary" />
-          </Pressable>
-        </View>
+    <TabScreenLayout>
+      {/* Title section */}
+      <View className="mb-6">
+        <Heading size="2xl" className="font-bold">
+          Manage Routines
+        </Heading>
+        <Text className="mt-1 text-xs font-semibold uppercase tracking-widest opacity-50">
+          Your Performance Blueprint
+        </Text>
+      </View>
 
-        {/* Title section */}
-        <View className="mb-6">
-          <Heading size="2xl" className="font-bold">
-            Manage Routines
-          </Heading>
-          <Text className="mt-1 text-xs font-semibold uppercase tracking-widest opacity-50">
-            Your Performance Blueprint
-          </Text>
-        </View>
+      {/* Add workout button */}
+      <Button
+        className="mb-6 h-fit flex-row items-center justify-center gap-3 rounded-2xl py-4"
+        onPress={() => setShowNewWorkoutInput(true)}
+      >
+        <Plus size={24} className="text-typography-0" />
+        <Text className="text-sm font-bold uppercase tracking-widest text-typography-0">
+          Add Workout
+        </Text>
+      </Button>
 
-        {/* Add workout button */}
-        <Button
-          className="mb-6 h-fit flex-row items-center justify-center gap-3 rounded-2xl py-4"
-          onPress={() => setShowNewWorkoutInput(true)}
-        >
-          <Plus size={24} className="text-typography-0" />
-          <Text className="text-sm font-bold uppercase tracking-widest text-typography-0">
-            Add Workout
-          </Text>
-        </Button>
-
-        {/* Inline create form */}
-        {showNewWorkoutInput && (
-          <CreateWorkoutForm
-            value={newWorkoutName}
-            onChangeText={setNewWorkoutName}
-            onSubmit={handleCreateWorkout}
-            onCancel={handleCancelCreate}
-          />
-        )}
-
-        <DraggableFlatList
-          data={workouts}
-          renderItem={renderWorkoutItem}
-          keyExtractor={(item) => item.id}
-          onDragEnd={({ data }) => reorderWorkouts(data)}
-          contentContainerStyle={{ paddingBottom: 16 }}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <View className="mt-8 items-center">
-              <Text className="text-center text-sm opacity-50">
-                No routines yet. Add your first workout above.
-              </Text>
-            </View>
-          }
+      {/* Inline create form */}
+      {showNewWorkoutInput && (
+        <CreateWorkoutForm
+          value={newWorkoutName}
+          onChangeText={setNewWorkoutName}
+          onSubmit={handleCreateWorkout}
+          onCancel={handleCancelCreate}
         />
-      </ThemedView>
-    </SafeAreaView>
+      )}
+
+      <DraggableFlatList
+        data={workouts}
+        renderItem={renderWorkoutItem}
+        keyExtractor={(item) => item.id}
+        onDragEnd={({ data }) => reorderWorkouts(data)}
+        contentContainerStyle={{ paddingBottom: 16 }}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View className="mt-8 items-center">
+            <Text className="text-center text-sm opacity-50">
+              No routines yet. Add your first workout above.
+            </Text>
+          </View>
+        }
+      />
+    </TabScreenLayout>
   );
 }

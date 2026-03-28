@@ -14,7 +14,11 @@ interface WorkoutState {
   updateWorkout: (id: string, updates: Partial<Workout>) => void;
   deleteWorkout: (id: string) => void;
   reorderWorkouts: (workouts: Workout[]) => void;
-  addExerciseToWorkout: (workoutId: string, exerciseName: string) => void;
+  addExerciseToWorkout: (
+    workoutId: string,
+    exerciseName: string,
+    defaults?: Partial<Pick<Exercise, 'reps' | 'numberOfSets' | 'weight'>>,
+  ) => void;
   updateExercise: (
     workoutId: string,
     exerciseId: string,
@@ -61,12 +65,17 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     set({ workouts });
   },
 
-  addExerciseToWorkout: (workoutId: string, exerciseName: string) => {
+  addExerciseToWorkout: (
+    workoutId: string,
+    exerciseName: string,
+    defaults?: Partial<Pick<Exercise, 'reps' | 'numberOfSets' | 'weight'>>,
+  ) => {
     const newExercise: Exercise = {
       id: generateId(),
       name: exerciseName,
-      reps: 0,
-      numberOfSets: 1,
+      reps: defaults?.reps ?? 0,
+      numberOfSets: defaults?.numberOfSets ?? 1,
+      weight: defaults?.weight,
     };
     set((state) => ({
       workouts: state.workouts.map((w) =>

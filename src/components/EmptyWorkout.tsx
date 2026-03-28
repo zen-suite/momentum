@@ -1,3 +1,4 @@
+import { MomentumLogo } from '@/components/MomentumLogo';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import React from 'react';
@@ -10,9 +11,10 @@ interface EmptyWorkoutProps {
 export function EmptyWorkout({ onCreateWorkout }: EmptyWorkoutProps) {
   return (
     <View className="flex-1 items-center justify-center px-8">
+      <MomentumLogo size={64} />
       <Heading
         size="2xl"
-        className="mb-4 text-center font-black tracking-widest"
+        className="mb-4 mt-6 text-center font-black tracking-widest"
       >
         START YOUR JOURNEY
       </Heading>

@@ -6,7 +6,7 @@ const config = getDefaultConfig(__dirname);
 
 const testConfig = {
   resolver: {
-    blockList: [/.*\.test\.[jt]sx?$/, /.*\.spec\.[jt]sx?$/],
+    blockList: [/.*\.test\.[jt]sx?$/, /.*\.spec\.[jt]sx?$/, /\/website\/.*/],
   },
 };
 
