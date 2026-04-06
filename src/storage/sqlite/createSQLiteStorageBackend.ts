@@ -10,7 +10,10 @@ import {
   parseLegacyWorkoutLogs,
   parseLegacyWorkouts,
 } from '../async/legacySerialization';
-import { StorageBackend } from '../storageBackend';
+import {
+  StorageBackend,
+  StorageInitializationOptions,
+} from '../storageBackend';
 
 import { SQLiteSettingsStorage } from './SQLiteSettingsStorage';
 import { SQLiteWorkoutHistoryStorage } from './SQLiteWorkoutHistoryStorage';
@@ -41,10 +44,15 @@ async function hasLegacyMigrationCompleted(db: DbClient): Promise<boolean> {
   return row?.value === '1';
 }
 
-async function migrateLegacyDataIfNeeded(db: DbClient): Promise<void> {
+async function migrateLegacyDataIfNeeded(
+  db: DbClient,
+  options?: StorageInitializationOptions,
+): Promise<void> {
   if (await hasLegacyMigrationCompleted(db)) {
     return;
   }
+
+  options?.onStatusChange?.('migrating-legacy-data');
 
   const keyValuePairs = await AsyncStorage.multiGet(LEGACY_STORAGE_KEY_LIST);
   const rawByKey = new Map<string, string | null>(keyValuePairs);
@@ -92,14 +100,14 @@ export function createSQLiteStorageBackend(): StorageBackend {
     workoutLogStorage: new SQLiteWorkoutLogStorage(),
     workoutHistoryStorage: new SQLiteWorkoutHistoryStorage(),
     settingsStorage: new SQLiteSettingsStorage(),
-    async initialize() {
+    async initialize(options?: StorageInitializationOptions) {
       if (sqliteInitialized) {
         return;
       }
 
       const db = await getDatabase();
       await initializeSchema(db);
-      await migrateLegacyDataIfNeeded(db);
+      await migrateLegacyDataIfNeeded(db, options);
       sqliteInitialized = true;
     },
     async clearAll() {

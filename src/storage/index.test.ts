@@ -3,7 +3,7 @@
 import { AppSettings } from '@/types/settings-types';
 import { Workout, WorkoutLog } from '@/types/workout';
 
-import { StorageBackend } from './storageBackend';
+import { StorageBackend, StorageInitializationOptions } from './storageBackend';
 
 const createStorageSpies = () => ({
   workoutLoad: jest.fn<Promise<Workout[]>, []>(),
@@ -14,7 +14,7 @@ const createStorageSpies = () => ({
   historySave: jest.fn<Promise<void>, [WorkoutLog[]]>(),
   settingsLoad: jest.fn<Promise<AppSettings | null>, []>(),
   settingsSave: jest.fn<Promise<void>, [AppSettings]>(),
-  initialize: jest.fn<Promise<void>, []>(),
+  initialize: jest.fn<Promise<void>, [StorageInitializationOptions?]>(),
   clearAll: jest.fn<Promise<void>, []>(),
 });
 
@@ -119,6 +119,22 @@ describe('storage backend selection', () => {
     expect(mockLegacySpies.initialize).toHaveBeenCalledTimes(1);
     expect(mockLegacySpies.workoutLoad).toHaveBeenCalledTimes(1);
     expect(mockSqliteSpies.workoutLoad).not.toHaveBeenCalled();
+  });
+
+  it('emits initialization status updates while bootstrapping storage', async () => {
+    mockSqliteSpies.initialize.mockImplementation(async (options) => {
+      options?.onStatusChange?.('migrating-legacy-data');
+    });
+    const storage = require('./index') as typeof import('./index');
+    const statuses: string[] = [];
+
+    await storage.initializeStorage({
+      onStatusChange(status) {
+        statuses.push(status);
+      },
+    });
+
+    expect(statuses).toEqual(['initializing-storage', 'migrating-legacy-data']);
   });
 
   it('clears both backends', async () => {

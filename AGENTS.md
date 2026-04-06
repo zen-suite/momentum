@@ -181,3 +181,31 @@ function WorkoutCard({ id }: { id: string }) {
 - Never use `any` in TypeScript.
 - When asked to commit, only write a short message with conventional commits. Don't include Claude co-author.
 - Always run `npm run format`, `npm run test`, after you update any code.
+
+## Delivery Guardrails
+
+### 1) Non-negotiable rules (hard fail)
+
+- If a non-dynamic inline style object is used, the task is invalid and must be fixed before final response.
+- If a `lucide-react-native` icon is used without being created in `components/icons/` and wrapped with `wrapIcon`, the task is invalid and must be fixed before final response.
+- If a violation of these rules is detected at any point, do not finalize; fix first, then continue.
+
+### 2) Dark-mode override rule
+
+- Do not add `dark:` overrides when using semantic design tokens (for example `text-typography-*`, `bg-background-*`, `border-outline-*`) because these tokens already adapt to light/dark themes.
+- Use `dark:` only when behavior must intentionally differ from token-based theming.
+- If `dark:` is used, explicitly justify why in the required self-audit section before final response.
+
+### 3) Required pre-submit checklist
+
+- For every implementation task, the final response must include a short `Pre-submit checklist` section.
+- The checklist must explicitly confirm:
+  - No non-dynamic inline styles were introduced.
+  - All Lucide icons follow the `components/icons/` + `wrapIcon` rule.
+  - `npm run format` and `npm run test` were run when code changed.
+
+### 4) Required self-audit before final response
+
+- Before sending the final response, run a brief self-audit and include it in the final response.
+- Self-audit must call out any potential AGENTS.md violations found during the task and whether they were fixed.
+- If uncertain about a possible violation, explicitly state the uncertainty and what was verified.

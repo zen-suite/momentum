@@ -5,6 +5,7 @@ export { default as Code } from './Code';
 export { default as Dumbbell } from './Dumbbell';
 export { default as GripVertical } from './GripVertical';
 export { default as Home } from './Home';
+export { default as LoaderCircle } from './LoaderCircle';
 export { default as Pencil } from './Pencil';
 export { default as Plus } from './Plus';
 export { default as Send } from './Send';
