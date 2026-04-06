@@ -3,8 +3,9 @@ import { SideDrawer } from '@/components/SideDrawer';
 import { ThemedView } from '@/components/ThemedView';
 import Menu from '@/components/icons/Menu';
 import { Text } from '@/components/ui/text';
+import { useLeftEdgeSwipeToOpen } from '@/hooks/useLeftEdgeSwipeToOpen';
 import { usePathname, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -20,14 +21,25 @@ export function TabScreenLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const openDrawer = useCallback(() => {
+    setDrawerOpen(true);
+  }, []);
+  const panHandlers = useLeftEdgeSwipeToOpen({
+    onOpen: openDrawer,
+    isDisabled: drawerOpen,
+  });
 
   return (
-    <SafeAreaView className="flex-1 bg-background-0">
+    <SafeAreaView
+      edges={['top', 'left', 'right']}
+      className="flex-1 bg-background-0"
+      {...panHandlers}
+    >
       <ThemedView className="flex-1 px-4">
         <View className="mb-4 flex-row items-center py-4">
           <Pressable
             testID="hamburger-button"
-            onPress={() => setDrawerOpen(true)}
+            onPress={openDrawer}
             hitSlop={8}
           >
             <Menu size={24} className="text-primary" />
