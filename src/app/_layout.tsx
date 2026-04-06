@@ -7,18 +7,18 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { WorkoutHistoryProvider } from '@/providers/WorkoutHistoryProvider';
-import { WorkoutRoutineProvider } from '@/providers/WorkoutRoutineProvider';
-import { WorkoutProvider } from '@/providers/WorkoutProvider';
-import { SettingsProvider } from '@/providers/SettingsProvider';
-import { StorageBootstrap } from '@/providers/StorageBootstrap';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSettings } from '@/hooks/useSettings';
+import { GluestackProvider } from '@/providers/GluestackProvider';
+import { SettingsProvider } from '@/providers/SettingsProvider';
+import { StorageBootstrap } from '@/providers/StorageBootstrap';
+import { WorkoutHistoryProvider } from '@/providers/WorkoutHistoryProvider';
+import { WorkoutProvider } from '@/providers/WorkoutProvider';
+import { WorkoutRoutineProvider } from '@/providers/WorkoutRoutineProvider';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '@/global.css';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -32,44 +32,44 @@ function ThemedApp() {
     settings.theme === 'system' ? systemColorScheme : settings.theme;
 
   return (
-    <GluestackUIProvider mode={settings.theme}>
-      <WorkoutProvider>
-        <WorkoutRoutineProvider>
-          <WorkoutHistoryProvider>
-            <ThemeProvider
-              value={effectiveColorScheme === 'dark' ? DarkTheme : DefaultTheme}
-            >
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="workout/[id]"
-                  options={{ headerShown: true }}
-                />
-                <Stack.Screen
-                  name="workout-log/[id]"
-                  options={{ headerShown: true }}
-                />
-                <Stack.Screen name="settings" options={{ headerShown: true }} />
-              </Stack>
-              <StatusBar style="auto" />
-            </ThemeProvider>
-          </WorkoutHistoryProvider>
-        </WorkoutRoutineProvider>
-      </WorkoutProvider>
-    </GluestackUIProvider>
+    <WorkoutProvider>
+      <WorkoutRoutineProvider>
+        <WorkoutHistoryProvider>
+          <ThemeProvider
+            value={effectiveColorScheme === 'dark' ? DarkTheme : DefaultTheme}
+          >
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="workout/[id]"
+                options={{ headerShown: true }}
+              />
+              <Stack.Screen
+                name="workout-log/[id]"
+                options={{ headerShown: true }}
+              />
+              <Stack.Screen name="settings" options={{ headerShown: true }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </WorkoutHistoryProvider>
+      </WorkoutRoutineProvider>
+    </WorkoutProvider>
   );
 }
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ErrorBoundary>
-        <StorageBootstrap>
+    <StorageBootstrap>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ErrorBoundary>
           <SettingsProvider>
-            <ThemedApp />
+            <GluestackProvider>
+              <ThemedApp />
+            </GluestackProvider>
           </SettingsProvider>
-        </StorageBootstrap>
-      </ErrorBoundary>
-    </GestureHandlerRootView>
+        </ErrorBoundary>
+      </GestureHandlerRootView>
+    </StorageBootstrap>
   );
 }
