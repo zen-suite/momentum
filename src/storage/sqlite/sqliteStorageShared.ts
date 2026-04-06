@@ -86,6 +86,13 @@ export type SettingsRow = {
 };
 
 let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
+let transactionQueue: Promise<void> = Promise.resolve();
+
+function serializeWrite<T>(work: () => Promise<T>): Promise<T> {
+  const queuedWork = transactionQueue.then(work);
+  transactionQueue = queuedWork.then(() => undefined).catch(() => undefined);
+  return queuedWork;
+}
 
 export function toIsoOrNull(date?: Date): string | null {
   return date ? date.toISOString() : null;
@@ -111,20 +118,28 @@ export async function runInTransaction(
   db: DbClient,
   work: () => Promise<void>,
 ): Promise<void> {
-  await db.execAsync('BEGIN IMMEDIATE;');
+  return serializeWrite(async () => {
+    await db.execAsync('BEGIN IMMEDIATE;');
 
-  try {
-    await work();
-    await db.execAsync('COMMIT;');
-  } catch (error) {
     try {
-      await db.execAsync('ROLLBACK;');
-    } catch {
-      // Ignore rollback failures to preserve original error context.
-    }
+      await work();
+      await db.execAsync('COMMIT;');
+    } catch (error) {
+      try {
+        await db.execAsync('ROLLBACK;');
+      } catch {
+        // Ignore rollback failures to preserve original error context.
+      }
 
-    throw error;
-  }
+      throw error;
+    }
+  });
+}
+
+export async function runSerializedWrite<T>(
+  work: () => Promise<T>,
+): Promise<T> {
+  return serializeWrite(work);
 }
 
 async function createSchemaV1(db: DbClient): Promise<void> {

@@ -5,6 +5,7 @@ import { AppSettings } from '@/types/settings-types';
 import {
   SettingsRow,
   getDatabase,
+  runSerializedWrite,
   upsertSettings,
 } from './sqliteStorageShared';
 
@@ -38,6 +39,6 @@ export class SQLiteSettingsStorage implements SettingsStorage {
 
   async save(settings: AppSettings): Promise<void> {
     const db = await getDatabase();
-    await upsertSettings(db, settings);
+    await runSerializedWrite(() => upsertSettings(db, settings));
   }
 }

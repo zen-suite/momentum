@@ -76,4 +76,29 @@ describe('usePersistWorkoutRoutine', () => {
     expect(mockSave).toHaveBeenCalledTimes(2);
     expect(mockSave).toHaveBeenLastCalledWith(updated);
   });
+
+  it('logs an error when persisting workout routine logs fails', async () => {
+    const error = new Error('save failed');
+    mockSave.mockRejectedValue(error);
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    renderHook(() => usePersistWorkoutRoutine());
+
+    await act(async () => {
+      useWorkoutRoutineStore.setState({
+        workoutLogs: mockLogs,
+        isLoaded: true,
+      });
+      await Promise.resolve();
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      '[storage] Failed to persist workout routine logs.',
+      error,
+    );
+
+    consoleErrorSpy.mockRestore();
+  });
 });

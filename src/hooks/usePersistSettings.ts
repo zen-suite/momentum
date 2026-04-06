@@ -9,6 +9,8 @@ export function usePersistSettings() {
 
   useEffect(() => {
     if (!isLoaded) return;
-    settingsStorage.save(settings);
+    void settingsStorage.save(settings).catch((error) => {
+      console.error('[storage] Failed to persist settings.', error);
+    });
   }, [settings, isLoaded]);
 }

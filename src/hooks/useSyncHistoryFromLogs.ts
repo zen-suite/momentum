@@ -14,13 +14,18 @@ export function useSyncHistoryFromLogs() {
     );
     if (logsToSync.length === 0) return;
 
-    (async () => {
+    void (async () => {
       const existing = await workoutHistoryStorage.load();
       const map = new Map(existing.map((l) => [l.id, l]));
       logsToSync.forEach((log) => map.set(log.id, log));
       const merged = Array.from(map.values());
       await workoutHistoryStorage.save(merged);
       setHistory(merged);
-    })();
+    })().catch((error) => {
+      console.error(
+        '[storage] Failed to sync workout history from logs.',
+        error,
+      );
+    });
   }, [workoutLogs, setHistory]);
 }

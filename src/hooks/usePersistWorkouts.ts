@@ -9,6 +9,8 @@ export function usePersistWorkouts() {
 
   useEffect(() => {
     if (!isLoaded) return;
-    workoutStorage.save(workouts);
+    void workoutStorage.save(workouts).catch((error) => {
+      console.error('[storage] Failed to persist workouts.', error);
+    });
   }, [workouts, isLoaded]);
 }
