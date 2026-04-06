@@ -44,6 +44,11 @@ describe('WorkoutCompletionProgress', () => {
         exercise: exercises[0],
         completedSets: 99,
       },
+      {
+        id: 'l2',
+        exercise: exercises[1],
+        completedSets: 99,
+      },
     ];
 
     render(

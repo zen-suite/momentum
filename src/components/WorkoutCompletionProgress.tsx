@@ -1,6 +1,8 @@
+import { AnimatedProgressBar } from '@/components/AnimatedProgressBar';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { Exercise, ExerciseLog } from '@/types/workout';
+import { getWorkoutCompletionSummary } from '@/utils/workoutCompletion';
 import { View } from 'react-native';
 
 interface WorkoutCompletionProgressProps {
@@ -14,20 +16,14 @@ export function WorkoutCompletionProgress({
   exerciseLogs,
   testID,
 }: WorkoutCompletionProgressProps) {
-  const totalSets = exercises.reduce((sum, e) => sum + e.numberOfSets, 0);
+  const { completionRate, totalSets } = getWorkoutCompletionSummary(
+    exercises,
+    exerciseLogs,
+  );
 
   if (totalSets === 0) {
     return null;
   }
-
-  const completedSets = exerciseLogs?.reduce(
-    (sum, log) => sum + log.completedSets,
-    0,
-  );
-  const completionRate = Math.min(
-    100,
-    Math.round(((completedSets ?? 0) / totalSets) * 100),
-  );
 
   return (
     <Card
@@ -46,12 +42,10 @@ export function WorkoutCompletionProgress({
           </Text>
         </View>
       </View>
-      <View className="h-2 overflow-hidden rounded-full bg-background-100">
-        <View
-          className="h-full rounded-full bg-typography-950"
-          style={{ width: `${completionRate}%` }}
-        />
-      </View>
+      <AnimatedProgressBar
+        progress={completionRate / 100}
+        fillClassName="bg-typography-950"
+      />
     </Card>
   );
 }
