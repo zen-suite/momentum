@@ -14,15 +14,15 @@ import { Text, View } from 'react-native';
 const SCOPE = 'ALERT';
 
 const alertStyle = tva({
-  base: 'items-center py-3 px-4 rounded-md flex-row gap-2 border-[0.5px]',
+  base: 'items-center py-3 px-4 rounded-md flex-row gap-2',
 
   variants: {
     action: {
-      error: 'bg-background-error border-error-200',
-      warning: 'bg-background-warning border-warning-200',
-      success: 'bg-background-success border-success-200',
-      info: 'bg-background-info border-info-200',
-      muted: 'bg-background-muted border-outline-200',
+      error: 'bg-background-error',
+      warning: 'bg-background-warning',
+      success: 'bg-background-success',
+      info: 'bg-background-info',
+      muted: 'bg-background-muted',
     },
 
     variant: {

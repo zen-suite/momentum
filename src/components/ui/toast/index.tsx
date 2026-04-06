@@ -26,14 +26,14 @@ const SCOPE = 'TOAST';
 cssInterop(MotionView, { className: 'style' });
 
 const toastStyle = tva({
-  base: 'p-4 m-1 rounded-md gap-1 border-[0.5px] web:pointer-events-auto shadow-hard-5',
+  base: 'p-4 m-1 rounded-md gap-1 web:pointer-events-auto shadow-hard-5',
   variants: {
     action: {
-      error: 'bg-background-error border-error-200',
-      warning: 'bg-background-warning border-warning-200',
-      success: 'bg-background-success border-success-200',
-      info: 'bg-background-info border-info-200',
-      muted: 'bg-background-muted border-outline-200',
+      error: 'bg-background-error',
+      warning: 'bg-background-warning',
+      success: 'bg-background-success',
+      info: 'bg-background-info',
+      muted: 'bg-background-muted',
     },
 
     variant: {
