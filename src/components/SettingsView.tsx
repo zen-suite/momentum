@@ -232,6 +232,7 @@ export function SettingsView({
         ) : null}
 
         <View
+          pointerEvents={showEmptyWorkoutState ? 'none' : 'auto'}
           className={cn('mb-12 gap-4', showEmptyWorkoutState && 'opacity-40')}
         >
           <View className="flex-row items-center justify-between gap-4">
@@ -246,7 +247,7 @@ export function SettingsView({
             </View>
             <View
               className={cn(
-                'w-[52px] min-w-[52px] items-center justify-center',
+                'flex min-w-[100px] items-center justify-start',
                 showEmptyWorkoutState && !notificationEnabled && 'opacity-40',
               )}
             >
@@ -300,7 +301,7 @@ export function SettingsView({
               </View>
             </Pressable>
 
-            {notificationTimePicker}
+            {!showEmptyWorkoutState ? notificationTimePicker : null}
 
             {showPermissionWarning ? (
               <SettingsStatusCallout
