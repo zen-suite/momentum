@@ -50,10 +50,10 @@ Copy the long ID in parentheses for your iPhone.
 Run from repo root:
 
 ```bash
-./scripts/release-ios-device.sh
+./scripts/release-ios-device.sh -d YOUR_DEVICE_UDID -t YOUR_TEAM_ID
 ```
 
-The script prompts for:
+If args are omitted, the script prompts for:
 
 1. `device_id` (iPhone UDID)
 2. `team_id` (Apple Developer Team ID)

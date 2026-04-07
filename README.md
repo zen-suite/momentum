@@ -45,3 +45,7 @@ npm run web
 npm run test
 npm run lint
 ```
+
+## Building for real ios device
+
+Checkout [ios build docs](docs/ios-build.md) about building this app for real IOS devices.
