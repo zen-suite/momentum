@@ -61,15 +61,19 @@ The script prompts for:
 Then it runs:
 
 1. `npx expo prebuild --platform ios`
-2. `xcodebuild` Release build for the provided device/team
-3. JS bundle verification (`main.jsbundle`)
-4. Device install via `npx ios-deploy`
+2. `(cd ios && pod install)`
+3. Pod verification (ensures task manager/background task/notifications pods are linked, including SDK-specific names such as `EXTaskManager`/`EXNotifications` or `ExpoTaskManager`/`ExpoNotifications`)
+4. `npx expo export:embed --platform ios --dev false --bundle-output ios/build/prebundle/main.jsbundle --assets-dest ios/build/prebundle`
+5. `xcodebuild` Release build for the provided device/team
+6. JS bundle verification (`main.jsbundle`)
+7. Device install via `npx ios-deploy`
 
 ## Troubleshooting
 
 1. Signing error: open `ios/Momentum.xcworkspace` in Xcode, set Team for target `Momentum`, then run build again.
 2. Device install fails: make sure iPhone is unlocked, trusted, and Developer Mode is enabled.
-3. `main.jsbundle` missing: re-run the script and confirm Step 2 (`xcodebuild`) completed successfully.
+3. `main.jsbundle` missing: re-run the script and confirm Step 5 (`xcodebuild`) completed successfully.
 4. `PhaseScriptExecution Bundle React Native code and images` with `EPERM ... main.jsbundle`: this is usually caused by `ENABLE_USER_SCRIPT_SANDBOXING = YES` in the app target. The script now auto-patches `ios/Momentum.xcodeproj/project.pbxproj` to set it to `NO` after `expo prebuild`.
 5. Notes such as `Run script build phase ... will be run during every build` and warnings about `IPHONEOS_DEPLOYMENT_TARGET` from `Pods.xcodeproj` are not fatal by themselves.
-6. If Step 2 fails with provisioning errors mentioning `Push Notifications capability` or `aps-environment entitlement` on a personal team, the script automatically removes `aps-environment` from `ios/Momentum/Momentum.entitlements` and retries once.
+6. If Step 5 fails with provisioning errors mentioning `Push Notifications capability` or `aps-environment entitlement` on a personal team, the script automatically removes `aps-environment` from `ios/Momentum/Momentum.entitlements` and retries once.
+7. If the app opens and closes immediately with `Cannot find native module 'ExpoTaskManager'`, native Expo pods were not linked in the built app. Re-run the script (it now runs `pod install` and verifies required Expo pods before build).
