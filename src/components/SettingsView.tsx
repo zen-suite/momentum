@@ -1,12 +1,13 @@
 import Monitor from '@/components/icons/Monitor';
 import Moon from '@/components/icons/Moon';
 import Sun from '@/components/icons/Sun';
-import { SettingsLegalRow } from '@/components/settings/SettingsLegalRow';
 import { SettingsDefaultInput } from '@/components/settings/SettingsDefaultInput';
+import { SettingsLegalRow } from '@/components/settings/SettingsLegalRow';
 import { SettingsNotificationPreview } from '@/components/settings/SettingsNotificationPreview';
 import { SettingsNumericStepper } from '@/components/settings/SettingsNumericStepper';
 import { SettingsStatusCallout } from '@/components/settings/SettingsStatusCallout';
 import { SettingsThemeOption } from '@/components/settings/SettingsThemeOption';
+import { Switch } from '@/components/ui/switch';
 import { Text } from '@/components/ui/text';
 import { useSettings } from '@/hooks/useSettings';
 import { useWorkoutHistory } from '@/hooks/useWorkoutHistory';
@@ -34,6 +35,11 @@ import { AppState, Platform, Pressable, ScrollView, View } from 'react-native';
 
 const PRIVACY_POLICY_URL = 'https://example.com/privacy';
 const TERMS_OF_SERVICE_URL = 'https://example.com/terms';
+const NOTIFICATION_SWITCH_TRACK_COLOR = {
+  false: '#F6F6F6',
+  true: '#262627',
+};
+const NOTIFICATION_SWITCH_THUMB_COLOR = '#FFFFFF';
 
 type NotificationPermissionState =
   | 'unknown'
@@ -108,7 +114,7 @@ export function SettingsView({
           <Text className="text-[11px] font-bold uppercase tracking-[0.32em] opacity-40">
             Appearance
           </Text>
-          <View className="rounded-[28px] bg-background-50 p-1.5 dark:bg-background-900">
+          <View className="rounded-[28px] bg-background-50 p-1.5">
             <View className="flex-row gap-2">
               <SettingsThemeOption
                 label="Light"
@@ -118,8 +124,8 @@ export function SettingsView({
                   <Sun
                     size={16}
                     className={cn(
-                      'text-typography-0 dark:text-typography-0',
-                      theme !== 'light' && 'opacity-80',
+                      'text-typography-950',
+                      theme === 'light' && 'text-typography-0',
                     )}
                   />
                 }
@@ -132,8 +138,8 @@ export function SettingsView({
                   <Moon
                     size={16}
                     className={cn(
-                      'text-typography-950 dark:text-typography-950',
-                      theme !== 'dark' && 'opacity-80',
+                      'text-typography-950',
+                      theme === 'dark' && 'text-typography-0',
                     )}
                   />
                 }
@@ -145,13 +151,10 @@ export function SettingsView({
                 icon={
                   <Monitor
                     size={16}
-                    className={cn({
-                      'text-typography-0': theme === 'system',
-                      'text-typography-950 dark:text-typography-950':
-                        theme === 'light',
-                      'text-typography-0 dark:text-typography-0':
-                        theme === 'dark',
-                    })}
+                    className={cn(
+                      'text-typography-950',
+                      theme === 'system' && 'text-typography-0',
+                    )}
                   />
                 }
               />
@@ -226,31 +229,29 @@ export function SettingsView({
                 Notifications
               </Text>
               <Text className="text-sm leading-6 opacity-65">
-                Build a repeating calendar rhythm, then let Momentum queue your
-                next reminder ahead of time.
+                Set your workout rhythm and Momentum will remind you when
+                it&apos;s time.
               </Text>
             </View>
-            <Pressable
-              testID="notification-toggle"
-              accessibilityRole="switch"
-              accessibilityState={{ checked: notificationEnabled }}
-              disabled={showEmptyWorkoutState && !notificationEnabled}
-              onPress={onToggleNotifications}
+            <View
               className={cn(
-                'h-14 w-[104px] rounded-full px-2',
-                notificationEnabled
-                  ? 'bg-typography-900 dark:bg-typography-50'
-                  : 'bg-background-50 dark:bg-background-900',
-                showEmptyWorkoutState && 'opacity-40',
+                'w-16 min-w-[80px] items-end justify-end',
+                showEmptyWorkoutState && !notificationEnabled && 'opacity-40',
               )}
             >
-              <View
-                className={cn(
-                  'h-10 w-10 rounded-full bg-background-0 dark:bg-background-950',
-                  notificationEnabled ? 'ml-auto mt-2' : 'mt-2',
-                )}
+              <Switch
+                testID="notification-toggle"
+                accessibilityRole="switch"
+                accessibilityState={{ checked: notificationEnabled }}
+                disabled={showEmptyWorkoutState && !notificationEnabled}
+                value={notificationEnabled}
+                onValueChange={() => onToggleNotifications()}
+                trackColor={NOTIFICATION_SWITCH_TRACK_COLOR}
+                thumbColor={NOTIFICATION_SWITCH_THUMB_COLOR}
+                ios_backgroundColor={NOTIFICATION_SWITCH_TRACK_COLOR.false}
+                size="lg"
               />
-            </Pressable>
+            </View>
           </View>
 
           <View className="gap-3">
@@ -274,7 +275,7 @@ export function SettingsView({
             <Pressable
               testID="notification-time-button"
               onPress={onNotificationTimePress}
-              className="rounded-[28px] bg-background-50 px-5 py-5 dark:bg-background-900"
+              className="rounded-[28px] bg-background-50 px-5 py-5"
             >
               <Text className="text-[11px] font-bold uppercase tracking-[0.32em] opacity-45">
                 Reminder Time

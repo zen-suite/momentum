@@ -22,7 +22,7 @@ export function SettingsNumericStepper({
   const incrementDisabled = maxValue !== undefined && value >= maxValue;
 
   return (
-    <View className="flex-1 rounded-[28px] bg-background-50 px-4 py-5 dark:bg-background-900">
+    <View className="flex-1 rounded-[28px] bg-background-50 px-4 py-5 ">
       <Text className="text-[11px] font-bold uppercase tracking-[0.3em] opacity-45">
         {label}
       </Text>
@@ -35,13 +35,11 @@ export function SettingsNumericStepper({
             disabled={decrementDisabled}
             onPress={() => onChange(Math.max(minValue, value - 1))}
             className={cn(
-              'h-12 w-12 items-center justify-center rounded-full bg-typography-900 dark:bg-typography-50',
+              'h-12 w-12 items-center justify-center rounded-full bg-typography-900',
               decrementDisabled && 'opacity-25',
             )}
           >
-            <Text className="text-2xl font-semibold text-typography-0 dark:text-typography-950">
-              −
-            </Text>
+            <Text className="text-2xl font-semibold text-typography-0">−</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
@@ -51,13 +49,11 @@ export function SettingsNumericStepper({
               onChange(maxValue ? Math.min(maxValue, value + 1) : value + 1)
             }
             className={cn(
-              'h-12 w-12 items-center justify-center rounded-full bg-typography-900 dark:bg-typography-50',
+              'h-12 w-12 items-center justify-center rounded-full bg-typography-900',
               incrementDisabled && 'opacity-25',
             )}
           >
-            <Text className="text-2xl font-semibold text-typography-0 dark:text-typography-950">
-              +
-            </Text>
+            <Text className="text-2xl font-semibold text-typography-0">+</Text>
           </Pressable>
         </View>
       </View>

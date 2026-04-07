@@ -13,6 +13,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "lint:fix": "expo lint --fix",
+    "typecheck": "tsc --noEmit",
     "test": "jest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

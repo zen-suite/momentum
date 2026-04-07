@@ -21,24 +21,18 @@ export function SettingsThemeOption({
       onPress={onPress}
       className={cn(
         'flex-1 flex-row items-center justify-center gap-2 rounded-xl py-3',
-        active ? 'bg-typography-900 dark:bg-typography-50' : 'bg-transparent',
+        active ? 'bg-typography-900' : 'bg-transparent',
       )}
     >
       <View
-        className={cn(
-          active
-            ? 'text-typography-0 dark:text-typography-950'
-            : 'text-primary opacity-40',
-        )}
+        className={cn(active ? 'text-typography-0' : 'text-primary opacity-40')}
       >
         {icon}
       </View>
       <Text
         className={cn(
           'text-xs font-bold uppercase tracking-widest',
-          active
-            ? 'text-typography-0 dark:text-typography-950'
-            : 'text-typography-950 opacity-40 dark:text-typography-50',
+          active ? 'text-typography-0' : 'text-typography-950 opacity-40',
         )}
       >
         {label}

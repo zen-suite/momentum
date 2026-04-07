@@ -14,7 +14,7 @@ export function SettingsNotificationPreview({
   scheduleLabel,
 }: SettingsNotificationPreviewProps) {
   return (
-    <View className="rounded-[32px] bg-background-50 px-5 py-6 dark:bg-background-900">
+    <View className="rounded-[32px] bg-background-50 px-5 py-6">
       <Text className="text-[11px] font-bold uppercase tracking-[0.32em] opacity-45">
         Next Reminder
       </Text>

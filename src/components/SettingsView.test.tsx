@@ -92,7 +92,7 @@ describe('SettingsView', () => {
       />,
     );
 
-    fireEvent.press(screen.getByTestId('notification-toggle'));
+    fireEvent(screen.getByTestId('notification-toggle'), 'valueChange', true);
     fireEvent.press(screen.getByTestId('notification-time-button'));
     fireEvent.press(screen.getAllByLabelText('Increase value')[0]);
     fireEvent.press(screen.getAllByLabelText('Increase value')[1]);

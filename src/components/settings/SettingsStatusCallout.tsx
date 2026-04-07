@@ -24,9 +24,7 @@ export function SettingsStatusCallout({
     <View
       className={cn(
         'rounded-[28px] px-5 py-5',
-        tone === 'warning'
-          ? 'bg-error-950/20 dark:bg-error-950/30'
-          : 'bg-background-50 dark:bg-background-900',
+        tone === 'warning' ? 'bg-error-950/20' : 'bg-background-50',
       )}
     >
       <Text className="text-[11px] font-bold uppercase tracking-[0.28em] opacity-45">
