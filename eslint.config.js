@@ -5,6 +5,19 @@ const expoConfig = require('eslint-config-expo/flat');
 module.exports = defineConfig([
   expoConfig,
   {
-    ignores: ['dist/*'],
+    ignores: [
+      '.expo/**',
+      'build/**',
+      'coverage/**',
+      'dist/**',
+      'ios/**',
+      'website/**',
+    ],
+  },
+  {
+    files: ['**/*.test.ts', '**/*.test.tsx'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
   },
 ]);

@@ -1,9 +1,11 @@
+import { AnimatedProgressBar } from '@/components/AnimatedProgressBar';
 import CheckIcon from '@/components/icons/CheckIcon';
 import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { Workout, WorkoutLog } from '@/types/workout';
 import { cn } from '@/utils/styles';
+import { getWorkoutCompletionSummary } from '@/utils/workoutCompletion';
 import React from 'react';
 import { Pressable, View } from 'react-native';
 
@@ -20,12 +22,10 @@ export function WorkoutProgressCard({
   onPress,
   onCheck,
 }: WorkoutProgressCardProps) {
-  const totalExercises = workout.exercises.length;
-  const completedExercises = log
-    ? log.exercises.filter((e) => !!e.completedAt).length
-    : 0;
+  const { completedSets, completionRate, totalSets } =
+    getWorkoutCompletionSummary(workout.exercises, log?.exercises);
   const isCompleted = !!log?.completedAt;
-  const progress = totalExercises > 0 ? completedExercises / totalExercises : 0;
+  const progress = completionRate / 100;
 
   return (
     <Pressable
@@ -67,15 +67,10 @@ export function WorkoutProgressCard({
           <View className="flex-row items-center justify-between">
             <Text className="text-xs font-bold tracking-widest">PROGRESS</Text>
             <Text className="text-xs">
-              {completedExercises} of {totalExercises} exercises completed
+              {completedSets} of {totalSets} sets completed
             </Text>
           </View>
-          <View className="h-1 overflow-hidden rounded-full bg-background-100">
-            <View
-              className="h-full rounded-full bg-primary"
-              style={{ width: `${progress * 100}%` }}
-            />
-          </View>
+          <AnimatedProgressBar progress={progress} trackClassName="h-1" />
         </View>
       </Card>
     </Pressable>

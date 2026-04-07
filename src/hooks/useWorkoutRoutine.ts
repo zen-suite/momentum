@@ -1,9 +1,9 @@
 import { useShallow } from 'zustand/react/shallow';
 
-import { useWorkoutLogStore } from '@/store/workoutLogStore';
+import { useWorkoutRoutineStore } from '@/store/workoutRoutineStore';
 
-export function useWorkoutLogs() {
-  return useWorkoutLogStore(
+export function useWorkoutRoutine() {
+  return useWorkoutRoutineStore(
     useShallow((state) => ({
       workoutLogs: state.workoutLogs,
       completeSet: state.completeSet,

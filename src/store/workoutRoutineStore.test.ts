@@ -1,11 +1,11 @@
 import { act, renderHook } from '@testing-library/react-native';
 
-import { useWorkoutLogStore } from '@/store/workoutLogStore';
+import { useWorkoutRoutineStore } from '@/store/workoutRoutineStore';
 import { useWorkoutStore } from '@/store/workoutStore';
 import { Workout } from '@/types/workout';
 
 beforeEach(() => {
-  useWorkoutLogStore.setState({ workoutLogs: {}, isLoaded: false });
+  useWorkoutRoutineStore.setState({ workoutLogs: {}, isLoaded: false });
   useWorkoutStore.setState({ workouts: [], isLoaded: false });
 });
 
@@ -28,10 +28,10 @@ function makeWorkoutWithExercises(): Workout {
   });
 }
 
-describe('workoutLogStore', () => {
+describe('workoutRoutineStore', () => {
   describe('completeExercise', () => {
     it('marks an exercise as completed', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -45,7 +45,7 @@ describe('workoutLogStore', () => {
     });
 
     it('does not complete the workout if not all exercises are done', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -57,7 +57,7 @@ describe('workoutLogStore', () => {
     });
 
     it('auto-completes the workout when all exercises are done', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -70,7 +70,7 @@ describe('workoutLogStore', () => {
     });
 
     it('toggles a completed exercise back to incomplete', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -86,7 +86,7 @@ describe('workoutLogStore', () => {
     });
 
     it('completes all sets when an exercise is completed', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -99,7 +99,7 @@ describe('workoutLogStore', () => {
     });
 
     it('clears all sets when an exercise is toggled off', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -115,7 +115,7 @@ describe('workoutLogStore', () => {
     });
 
     it('sets completedSets to numberOfSets when exercise is completed', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkout({
         exercises: [
           { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 3 },
@@ -135,7 +135,7 @@ describe('workoutLogStore', () => {
     });
 
     it('clears workout completedAt when an exercise is toggled off', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -153,7 +153,7 @@ describe('workoutLogStore', () => {
 
   describe('completeSet', () => {
     it('marks sets up to and including setIndex as completed', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -166,7 +166,7 @@ describe('workoutLogStore', () => {
     });
 
     it('auto-completes the exercise when all sets are done', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkout({
         exercises: [
           { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 2 },
@@ -184,7 +184,7 @@ describe('workoutLogStore', () => {
     });
 
     it('toggles a set off when already completed', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -198,7 +198,7 @@ describe('workoutLogStore', () => {
     });
 
     it('auto-completes exercise when numberOfSets increased after log creation', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workoutV1 = makeWorkout({
         exercises: [
           { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 },
@@ -226,7 +226,7 @@ describe('workoutLogStore', () => {
     });
 
     it('can complete sets for an exercise added after log creation', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workoutV1 = makeWorkout({
         exercises: [
           { id: 'e1', name: 'Bench Press', reps: 10, numberOfSets: 1 },
@@ -255,7 +255,7 @@ describe('workoutLogStore', () => {
 
   describe('toggleWorkoutComplete', () => {
     it('marks all exercises and the workout as complete', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -265,10 +265,15 @@ describe('workoutLogStore', () => {
       const log = result.current.getLog('w1');
       expect(log?.completedAt).toBeInstanceOf(Date);
       expect(log?.exercises.every((e) => !!e.completedAt)).toBe(true);
+      expect(
+        log?.exercises.every(
+          (e) => e.completedSets === e.exercise.numberOfSets,
+        ),
+      ).toBe(true);
     });
 
     it('clears all completions when called again on a completed workout', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -281,12 +286,13 @@ describe('workoutLogStore', () => {
       const log = result.current.getLog('w1');
       expect(log?.completedAt).toBeUndefined();
       expect(log?.exercises.every((e) => !e.completedAt)).toBe(true);
+      expect(log?.exercises.every((e) => e.completedSets === 0)).toBe(true);
     });
   });
 
   describe('restartRoutine', () => {
     it('clears all workout logs', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {
@@ -305,12 +311,12 @@ describe('workoutLogStore', () => {
 
   describe('getLog', () => {
     it('returns undefined when no log exists for a workout', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       expect(result.current.getLog('nonexistent')).toBeUndefined();
     });
 
     it('returns the log after a completion action', () => {
-      const { result } = renderHook(() => useWorkoutLogStore());
+      const { result } = renderHook(() => useWorkoutRoutineStore());
       const workout = makeWorkoutWithExercises();
 
       act(() => {

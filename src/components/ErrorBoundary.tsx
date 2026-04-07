@@ -1,6 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { clearAllStorage } from '@/storage';
 
 interface State {
   hasError: boolean;
@@ -38,7 +39,7 @@ export class ErrorBoundary extends React.Component<
           text: 'Clear',
           style: 'destructive',
           onPress: async () => {
-            await AsyncStorage.clear();
+            await clearAllStorage();
             this.setState({ hasError: false, error: null });
           },
         },

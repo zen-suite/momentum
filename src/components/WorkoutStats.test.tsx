@@ -1,5 +1,5 @@
 import { WorkoutStats } from '@/components/WorkoutStats';
-import { Exercise, ExerciseLog } from '@/types/workout';
+import { Exercise } from '@/types/workout';
 import { render, screen } from '@testing-library/react-native';
 import React from 'react';
 
@@ -32,48 +32,6 @@ describe('WorkoutStats', () => {
     // totalReps = 78, totalSets = 7, estMinutes = round((78*3 + 7*90) / 60) = round(14.4) = 14
     render(<WorkoutStats exercises={exercises} />);
     expect(screen.getByText('14')).toBeTruthy();
-  });
-
-  it('does not render completion card without exerciseLogs prop', () => {
-    render(<WorkoutStats exercises={exercises} />);
-    expect(screen.queryByText('Completion')).toBeNull();
-  });
-
-  it('renders completion rate when exerciseLogs provided', () => {
-    const logs: ExerciseLog[] = [
-      {
-        id: 'l1',
-        exercise: exercises[0],
-        completedSets: 3,
-      },
-      {
-        id: 'l2',
-        exercise: exercises[1],
-        completedSets: 2,
-      },
-    ];
-    // completedSets = 5, totalSets = 7, rate = round(5/7 * 100) = 71
-    render(<WorkoutStats exercises={exercises} exerciseLogs={logs} />);
-    expect(screen.getByText('Completion')).toBeTruthy();
-    expect(screen.getByText('71')).toBeTruthy();
-  });
-
-  it('shows 0% completion when no sets completed', () => {
-    const logs: ExerciseLog[] = [
-      { id: 'l1', exercise: exercises[0], completedSets: 0 },
-      { id: 'l2', exercise: exercises[1], completedSets: 0 },
-    ];
-    render(<WorkoutStats exercises={exercises} exerciseLogs={logs} />);
-    expect(screen.getByText('Completion')).toBeTruthy();
-    expect(screen.getByText('0')).toBeTruthy();
-  });
-
-  it('caps completion at 100%', () => {
-    const logs: ExerciseLog[] = [
-      { id: 'l1', exercise: exercises[0], completedSets: 99 },
-    ];
-    render(<WorkoutStats exercises={exercises} exerciseLogs={logs} />);
-    expect(screen.getByText('100')).toBeTruthy();
   });
 
   it('renders zero stats for empty exercises', () => {

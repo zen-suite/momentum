@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { Workout } from '@/types/workout';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -55,7 +55,7 @@ export function WorkoutCard({
     <View className={className}>
       <View
         className="absolute bottom-0 right-0 top-0 flex-row"
-        style={{ width: ACTION_WIDTH }}
+        style={styles.actions}
       >
         <Pressable
           testID="edit-button"
@@ -111,3 +111,9 @@ export function WorkoutCard({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  actions: {
+    width: ACTION_WIDTH,
+  },
+});

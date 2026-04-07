@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
-import { Exercise, ExerciseLog } from '@/types/workout';
+import { Exercise } from '@/types/workout';
 import { View } from 'react-native';
 
 function formatStat(value: number): string {
@@ -12,10 +12,9 @@ function formatStat(value: number): string {
 
 interface WorkoutStatsProps {
   exercises: Exercise[];
-  exerciseLogs?: ExerciseLog[];
 }
 
-export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
+export function WorkoutStats({ exercises }: WorkoutStatsProps) {
   const totalReps = exercises.reduce(
     (sum, e) => sum + e.reps * e.numberOfSets,
     0,
@@ -28,20 +27,6 @@ export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
       0,
     ),
   );
-
-  // Completion rate = total completed sets across all exercises / total planned sets.
-  // Capped at 100% in case completed sets exceed planned sets.
-  const completionRate =
-    exerciseLogs != null && totalSets > 0
-      ? Math.min(
-          100,
-          Math.round(
-            (exerciseLogs.reduce((sum, log) => sum + log.completedSets, 0) /
-              totalSets) *
-              100,
-          ),
-        )
-      : null;
 
   return (
     <View className="mt-5 gap-3">
@@ -82,27 +67,6 @@ export function WorkoutStats({ exercises, exerciseLogs }: WorkoutStatsProps) {
           </View>
         </Card>
       </View>
-      {completionRate !== null && (
-        <Card variant="filled" className="rounded-2xl px-4 py-4">
-          <View className="mb-3 flex-row items-center justify-between">
-            <Text className="text-xs font-bold uppercase tracking-widest opacity-50">
-              Completion
-            </Text>
-            <View className="flex-row items-baseline gap-0.5">
-              <Text className="text-base font-black">{completionRate}</Text>
-              <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
-                %
-              </Text>
-            </View>
-          </View>
-          <View className="h-2 overflow-hidden rounded-full bg-background-100">
-            <View
-              className="h-full rounded-full bg-typography-950"
-              style={{ width: `${completionRate}%` }}
-            />
-          </View>
-        </Card>
-      )}
     </View>
   );
 }

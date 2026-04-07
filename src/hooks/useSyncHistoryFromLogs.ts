@@ -2,10 +2,25 @@ import { useEffect } from 'react';
 
 import { workoutHistoryStorage } from '@/storage';
 import { useWorkoutHistoryStore } from '@/store/workoutHistoryStore';
-import { useWorkoutLogStore } from '@/store/workoutLogStore';
+import { useWorkoutRoutineStore } from '@/store/workoutRoutineStore';
+import { WorkoutLog } from '@/types/workout';
+
+const IN_PROGRESS_SUFFIX = 'in-progress';
+
+function getHistoryEntryId(log: WorkoutLog): string {
+  const completionKey = log.completedAt?.toISOString() ?? IN_PROGRESS_SUFFIX;
+  return `${log.workout.id}:${completionKey}`;
+}
+
+function toHistoryEntry(log: WorkoutLog): WorkoutLog {
+  return {
+    ...log,
+    id: getHistoryEntryId(log),
+  };
+}
 
 export function useSyncHistoryFromLogs() {
-  const workoutLogs = useWorkoutLogStore((state) => state.workoutLogs);
+  const workoutLogs = useWorkoutRoutineStore((state) => state.workoutLogs);
   const setHistory = useWorkoutHistoryStore((state) => state.setHistory);
 
   useEffect(() => {
@@ -14,13 +29,20 @@ export function useSyncHistoryFromLogs() {
     );
     if (logsToSync.length === 0) return;
 
-    (async () => {
+    void (async () => {
       const existing = await workoutHistoryStorage.load();
-      const map = new Map(existing.map((l) => [l.id, l]));
-      logsToSync.forEach((log) => map.set(log.id, log));
+      const map = new Map(existing.map((log) => [getHistoryEntryId(log), log]));
+      logsToSync.forEach((log) =>
+        map.set(getHistoryEntryId(log), toHistoryEntry(log)),
+      );
       const merged = Array.from(map.values());
       await workoutHistoryStorage.save(merged);
       setHistory(merged);
-    })();
+    })().catch((error) => {
+      console.error(
+        '[storage] Failed to sync workout history from logs.',
+        error,
+      );
+    });
   }, [workoutLogs, setHistory]);
 }

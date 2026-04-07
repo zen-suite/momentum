@@ -1,10 +1,10 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
 
 import { workoutLogStorage } from '@/storage';
-import { useWorkoutLogStore } from '@/store/workoutLogStore';
+import { useWorkoutRoutineStore } from '@/store/workoutRoutineStore';
 import { WorkoutLog } from '@/types/workout';
 
-import { useLoadWorkoutLogs } from './useLoadWorkoutLogs';
+import { useLoadWorkoutRoutine } from './useLoadWorkoutRoutine';
 
 jest.mock('@/storage', () => ({
   workoutLogStorage: {
@@ -31,29 +31,29 @@ const mockLogs: Record<string, WorkoutLog> = {
 
 beforeEach(() => {
   jest.clearAllMocks();
-  useWorkoutLogStore.setState({ workoutLogs: {}, isLoaded: false });
+  useWorkoutRoutineStore.setState({ workoutLogs: {}, isLoaded: false });
   mockLoad.mockResolvedValue(mockLogs);
 });
 
-describe('useLoadWorkoutLogs', () => {
+describe('useLoadWorkoutRoutine', () => {
   it('loads workout logs from storage into the store', async () => {
-    renderHook(() => useLoadWorkoutLogs());
+    renderHook(() => useLoadWorkoutRoutine());
 
     await waitFor(() => {
-      expect(useWorkoutLogStore.getState().workoutLogs).toEqual(mockLogs);
+      expect(useWorkoutRoutineStore.getState().workoutLogs).toEqual(mockLogs);
     });
   });
 
   it('sets isLoaded to true after loading', async () => {
-    renderHook(() => useLoadWorkoutLogs());
+    renderHook(() => useLoadWorkoutRoutine());
 
     await waitFor(() => {
-      expect(useWorkoutLogStore.getState().isLoaded).toBe(true);
+      expect(useWorkoutRoutineStore.getState().isLoaded).toBe(true);
     });
   });
 
   it('calls workoutLogStorage.load once on mount', async () => {
-    renderHook(() => useLoadWorkoutLogs());
+    renderHook(() => useLoadWorkoutRoutine());
 
     await waitFor(() => {
       expect(mockLoad).toHaveBeenCalledTimes(1);

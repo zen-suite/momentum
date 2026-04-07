@@ -3,17 +3,10 @@ import { create } from 'zustand';
 import {
   AppSettings,
   ExerciseDefaults,
+  NotificationSettings,
   ThemeMode,
 } from '@/types/settings-types';
-
-export const DEFAULT_SETTINGS: AppSettings = {
-  theme: 'system',
-  exerciseDefaults: {
-    reps: 0,
-    sets: 1,
-    weight: undefined,
-  },
-};
+import { DEFAULT_SETTINGS } from '@/utils/settings';
 
 interface SettingsState {
   settings: AppSettings;
@@ -21,6 +14,8 @@ interface SettingsState {
   setSettings: (settings: AppSettings) => void;
   updateTheme: (theme: ThemeMode) => void;
   updateExerciseDefaults: (defaults: Partial<ExerciseDefaults>) => void;
+  updateNotificationSettings: (settings: Partial<NotificationSettings>) => void;
+  setNotificationsEnabled: (enabled: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
@@ -40,6 +35,24 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       settings: {
         ...state.settings,
         exerciseDefaults: { ...state.settings.exerciseDefaults, ...defaults },
+      },
+    }));
+  },
+
+  updateNotificationSettings: (notifications) => {
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        notifications: { ...state.settings.notifications, ...notifications },
+      },
+    }));
+  },
+
+  setNotificationsEnabled: (enabled: boolean) => {
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        notifications: { ...state.settings.notifications, enabled },
       },
     }));
   },

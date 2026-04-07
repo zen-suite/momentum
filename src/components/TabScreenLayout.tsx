@@ -37,11 +37,7 @@ export function TabScreenLayout({
     >
       <ThemedView className="flex-1 px-4">
         <View className="mb-4 flex-row items-center py-4">
-          <Pressable
-            testID="hamburger-button"
-            onPress={openDrawer}
-            hitSlop={8}
-          >
+          <Pressable testID="hamburger-button" onPress={openDrawer} hitSlop={8}>
             <Menu size={24} className="text-primary" />
           </Pressable>
           <View

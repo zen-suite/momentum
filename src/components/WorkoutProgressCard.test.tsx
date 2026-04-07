@@ -22,19 +22,19 @@ const completedLog: WorkoutLog = {
     {
       id: 'el1',
       exercise: baseWorkout.exercises[0],
-      sets: [],
+      completedSets: 3,
       completedAt: new Date(),
     },
     {
       id: 'el2',
       exercise: baseWorkout.exercises[1],
-      sets: [],
+      completedSets: 3,
       completedAt: new Date(),
     },
     {
       id: 'el3',
       exercise: baseWorkout.exercises[2],
-      sets: [],
+      completedSets: 3,
       completedAt: new Date(),
     },
   ],
@@ -48,11 +48,11 @@ const partialLog: WorkoutLog = {
     {
       id: 'el1',
       exercise: baseWorkout.exercises[0],
-      sets: [],
+      completedSets: 2,
       completedAt: new Date(),
     },
-    { id: 'el2', exercise: baseWorkout.exercises[1], sets: [] },
-    { id: 'el3', exercise: baseWorkout.exercises[2], sets: [] },
+    { id: 'el2', exercise: baseWorkout.exercises[1], completedSets: 0 },
+    { id: 'el3', exercise: baseWorkout.exercises[2], completedSets: 0 },
   ],
 };
 
@@ -72,7 +72,7 @@ describe('WorkoutProgressCard', () => {
     ).toBeTruthy();
   });
 
-  it('shows 0 of 3 exercises completed when no log', () => {
+  it('shows 0 of 9 sets completed when no log', () => {
     const { getByText } = render(
       <WorkoutProgressCard
         workout={baseWorkout}
@@ -81,10 +81,10 @@ describe('WorkoutProgressCard', () => {
         onCheck={jest.fn()}
       />,
     );
-    expect(getByText('0 of 3 exercises completed')).toBeTruthy();
+    expect(getByText('0 of 9 sets completed')).toBeTruthy();
   });
 
-  it('shows 1 of 3 exercises completed for partial log', () => {
+  it('shows 2 of 9 sets completed for partial log', () => {
     const { getByText } = render(
       <WorkoutProgressCard
         workout={baseWorkout}
@@ -93,10 +93,10 @@ describe('WorkoutProgressCard', () => {
         onCheck={jest.fn()}
       />,
     );
-    expect(getByText('1 of 3 exercises completed')).toBeTruthy();
+    expect(getByText('2 of 9 sets completed')).toBeTruthy();
   });
 
-  it('shows 3 of 3 exercises completed when all done', () => {
+  it('shows 9 of 9 sets completed when all done', () => {
     const { getByText } = render(
       <WorkoutProgressCard
         workout={baseWorkout}
@@ -105,7 +105,7 @@ describe('WorkoutProgressCard', () => {
         onCheck={jest.fn()}
       />,
     );
-    expect(getByText('3 of 3 exercises completed')).toBeTruthy();
+    expect(getByText('9 of 9 sets completed')).toBeTruthy();
   });
 
   it('does not render description when absent', () => {

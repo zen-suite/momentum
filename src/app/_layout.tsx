@@ -7,17 +7,20 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { WorkoutHistoryProvider } from '@/providers/WorkoutHistoryProvider';
-import { WorkoutLogProvider } from '@/providers/WorkoutLogProvider';
-import { WorkoutProvider } from '@/providers/WorkoutProvider';
-import { SettingsProvider } from '@/providers/SettingsProvider';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSettings } from '@/hooks/useSettings';
+import { GluestackProvider } from '@/providers/GluestackProvider';
+import { NotificationProvider } from '@/providers/NotificationProvider';
+import { SettingsProvider } from '@/providers/SettingsProvider';
+import { StorageBootstrap } from '@/providers/StorageBootstrap';
+import { WorkoutHistoryProvider } from '@/providers/WorkoutHistoryProvider';
+import { WorkoutProvider } from '@/providers/WorkoutProvider';
+import { WorkoutRoutineProvider } from '@/providers/WorkoutRoutineProvider';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '@/global.css';
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -31,10 +34,10 @@ function ThemedApp() {
     settings.theme === 'system' ? systemColorScheme : settings.theme;
 
   return (
-    <GluestackUIProvider mode={settings.theme}>
-      <WorkoutProvider>
-        <WorkoutLogProvider>
-          <WorkoutHistoryProvider>
+    <WorkoutProvider>
+      <WorkoutRoutineProvider>
+        <WorkoutHistoryProvider>
+          <NotificationProvider>
             <ThemeProvider
               value={effectiveColorScheme === 'dark' ? DarkTheme : DefaultTheme}
             >
@@ -52,21 +55,31 @@ function ThemedApp() {
               </Stack>
               <StatusBar style="auto" />
             </ThemeProvider>
-          </WorkoutHistoryProvider>
-        </WorkoutLogProvider>
-      </WorkoutProvider>
-    </GluestackUIProvider>
+          </NotificationProvider>
+        </WorkoutHistoryProvider>
+      </WorkoutRoutineProvider>
+    </WorkoutProvider>
   );
 }
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ErrorBoundary>
-        <SettingsProvider>
-          <ThemedApp />
-        </SettingsProvider>
-      </ErrorBoundary>
-    </GestureHandlerRootView>
+    <StorageBootstrap>
+      <GestureHandlerRootView style={styles.root}>
+        <ErrorBoundary>
+          <SettingsProvider>
+            <GluestackProvider>
+              <ThemedApp />
+            </GluestackProvider>
+          </SettingsProvider>
+        </ErrorBoundary>
+      </GestureHandlerRootView>
+    </StorageBootstrap>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});

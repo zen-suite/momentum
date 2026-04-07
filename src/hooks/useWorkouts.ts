@@ -6,6 +6,7 @@ export function useWorkouts() {
   return useWorkoutStore(
     useShallow((state) => ({
       workouts: state.workouts,
+      isLoaded: state.isLoaded,
       addWorkout: state.addWorkout,
       updateWorkout: state.updateWorkout,
       deleteWorkout: state.deleteWorkout,

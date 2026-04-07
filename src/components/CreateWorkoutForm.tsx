@@ -19,13 +19,12 @@ export function CreateWorkoutForm({
         Workout Name
       </Text>
       <TextInput
-        className="mb-6 border-b border-outline-400/20 pb-3 text-2xl font-semibold text-typography-950"
+        className="mb-6 min-h-14 border-b border-outline-400/20 pb-3 text-2xl font-semibold text-typography-950"
         placeholder="e.g. Push Day"
         value={value}
         onChangeText={onChangeText}
         autoFocus
         onSubmitEditing={onSubmit}
-        style={{ minHeight: 56 }}
       />
       <View className="flex-row gap-3">
         <Pressable

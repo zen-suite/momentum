@@ -104,7 +104,7 @@ export default function WorkoutDetailScreen() {
               value={editingExerciseName}
               onChangeText={setEditingExerciseName}
               autoFocus
-              style={{ fontSize: 18, fontWeight: '600' }}
+              className="text-lg font-semibold"
               onBlur={() => {
                 if (editingExerciseName.trim()) {
                   updateExercise(workout.id, exercise.id, {
@@ -158,7 +158,7 @@ export default function WorkoutDetailScreen() {
               }
               keyboardType="numeric"
               placeholder="0"
-              style={{ fontSize: 36, fontWeight: '800', textAlign: 'center' }}
+              className="text-center font-extrabold"
             />
           </Input>
         </View>
@@ -176,7 +176,7 @@ export default function WorkoutDetailScreen() {
               }
               keyboardType="numeric"
               placeholder="0"
-              style={{ fontSize: 36, fontWeight: '800', textAlign: 'center' }}
+              className="text-center font-extrabold"
             />
           </Input>
         </View>
@@ -201,7 +201,7 @@ export default function WorkoutDetailScreen() {
               }}
               keyboardType="decimal-pad"
               placeholder="—"
-              style={{ fontSize: 36, fontWeight: '800', textAlign: 'center' }}
+              className="text-center font-extrabold"
             />
           </Input>
         </View>
@@ -218,127 +218,126 @@ export default function WorkoutDetailScreen() {
         }}
       />
       <ThemedView className="flex-1">
-        <ScrollView
-          contentContainerStyle={{ padding: 16, paddingBottom: 48 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Workout name — Headline-LG editorial */}
-          <View className="mb-8">
-            {editingWorkoutName ? (
-              <Input variant="underlined">
-                <InputField
-                  value={workoutNameInput}
-                  onChangeText={setWorkoutNameInput}
-                  autoFocus
-                  style={{ fontSize: 30, fontWeight: '800' }}
-                  onBlur={() => {
-                    if (workoutNameInput.trim()) {
-                      updateWorkout(workout.id, {
-                        name: workoutNameInput.trim(),
-                      });
-                    }
-                    setEditingWorkoutName(false);
-                  }}
-                  onSubmitEditing={() => {
-                    if (workoutNameInput.trim()) {
-                      updateWorkout(workout.id, {
-                        name: workoutNameInput.trim(),
-                      });
-                    }
-                    setEditingWorkoutName(false);
-                  }}
-                />
-              </Input>
-            ) : (
-              <Pressable
-                onPress={() => {
-                  setWorkoutNameInput(workout.name);
-                  setEditingWorkoutName(true);
-                }}
-              >
-                <Heading size="3xl" className="font-extrabold">
-                  {workout.name}
-                </Heading>
-                <Text className="mt-1 text-xs font-bold uppercase tracking-widest opacity-50">
-                  {workout.exercises.length}{' '}
-                  {workout.exercises.length === 1 ? 'exercise' : 'exercises'}
-                </Text>
-              </Pressable>
-            )}
-          </View>
-
-          {/* Add exercise CTA */}
-          <Button
-            className="mb-8 h-fit flex-row items-center justify-center gap-3 rounded-2xl py-4"
-            onPress={() => setShowAddExercise(true)}
-          >
-            <Plus size={24} className="text-typography-0" />
-            <Text className="text-sm font-bold uppercase tracking-widest text-typography-0">
-              Add Exercise
-            </Text>
-          </Button>
-
-          {/* Inline add exercise form */}
-          {showAddExercise && (
-            <Card variant="filled" className="mb-8 rounded-2xl p-5">
-              <Text className="mb-2 text-xs font-bold uppercase tracking-widest opacity-50">
-                Exercise Name
-              </Text>
-              <Input variant="underlined" className="mb-6">
-                <InputField
-                  placeholder="e.g. Bench Press"
-                  value={newExerciseName}
-                  onChangeText={setNewExerciseName}
-                  autoFocus
-                  style={{ fontSize: 20, fontWeight: '600' }}
-                  onSubmitEditing={handleAddExercise}
-                />
-              </Input>
-              <View className="flex-row gap-3">
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View className="p-4 pb-12">
+            {/* Workout name — Headline-LG editorial */}
+            <View className="mb-8">
+              {editingWorkoutName ? (
+                <Input variant="underlined">
+                  <InputField
+                    value={workoutNameInput}
+                    onChangeText={setWorkoutNameInput}
+                    autoFocus
+                    className="text-3xl font-extrabold"
+                    onBlur={() => {
+                      if (workoutNameInput.trim()) {
+                        updateWorkout(workout.id, {
+                          name: workoutNameInput.trim(),
+                        });
+                      }
+                      setEditingWorkoutName(false);
+                    }}
+                    onSubmitEditing={() => {
+                      if (workoutNameInput.trim()) {
+                        updateWorkout(workout.id, {
+                          name: workoutNameInput.trim(),
+                        });
+                      }
+                      setEditingWorkoutName(false);
+                    }}
+                  />
+                </Input>
+              ) : (
                 <Pressable
-                  className="flex-1 items-center py-3"
                   onPress={() => {
-                    setShowAddExercise(false);
-                    setNewExerciseName('');
+                    setWorkoutNameInput(workout.name);
+                    setEditingWorkoutName(true);
                   }}
                 >
-                  <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
-                    Cancel
+                  <Heading size="3xl" className="font-extrabold">
+                    {workout.name}
+                  </Heading>
+                  <Text className="mt-1 text-xs font-bold uppercase tracking-widest opacity-50">
+                    {workout.exercises.length}{' '}
+                    {workout.exercises.length === 1 ? 'exercise' : 'exercises'}
                   </Text>
                 </Pressable>
-                <Button
-                  className="flex-1 rounded-xl"
-                  size="lg"
-                  onPress={handleAddExercise}
-                >
-                  <Text className="text-sm font-bold uppercase tracking-widest text-typography-0">
-                    Add
-                  </Text>
-                </Button>
-              </View>
-            </Card>
-          )}
+              )}
+            </View>
 
-          {/* Exercise list */}
-          {workout.exercises.length === 0 ? (
-            <View className="mt-12 items-center gap-4">
-              <Dumbbell size={56} color={textColor + '1A'} />
-              <Heading
-                size="md"
-                className="font-bold uppercase tracking-widest"
-              >
-                No exercises yet
-              </Heading>
-              <Text className="text-center text-xs font-semibold uppercase tracking-widest opacity-40">
-                Add your first exercise above
+            {/* Add exercise CTA */}
+            <Button
+              className="mb-8 h-fit flex-row items-center justify-center gap-3 rounded-2xl py-4"
+              onPress={() => setShowAddExercise(true)}
+            >
+              <Plus size={24} className="text-typography-0" />
+              <Text className="text-sm font-bold uppercase tracking-widest text-typography-0">
+                Add Exercise
               </Text>
-            </View>
-          ) : (
-            <View className="gap-4">
-              {workout.exercises.map(renderExercise)}
-              <WorkoutStats exercises={workout.exercises} />
-            </View>
-          )}
+            </Button>
+
+            {/* Inline add exercise form */}
+            {showAddExercise && (
+              <Card variant="filled" className="mb-8 rounded-2xl p-5">
+                <Text className="mb-2 text-xs font-bold uppercase tracking-widest opacity-50">
+                  Exercise Name
+                </Text>
+                <Input variant="underlined" className="mb-6">
+                  <InputField
+                    placeholder="e.g. Bench Press"
+                    value={newExerciseName}
+                    onChangeText={setNewExerciseName}
+                    autoFocus
+                    className="text-xl font-semibold"
+                    onSubmitEditing={handleAddExercise}
+                  />
+                </Input>
+                <View className="flex-row gap-3">
+                  <Pressable
+                    className="flex-1 items-center py-3"
+                    onPress={() => {
+                      setShowAddExercise(false);
+                      setNewExerciseName('');
+                    }}
+                  >
+                    <Text className="text-sm font-bold uppercase tracking-widest opacity-50">
+                      Cancel
+                    </Text>
+                  </Pressable>
+                  <Button
+                    className="flex-1 rounded-xl"
+                    size="lg"
+                    onPress={handleAddExercise}
+                  >
+                    <Text className="text-sm font-bold uppercase tracking-widest text-typography-0">
+                      Add
+                    </Text>
+                  </Button>
+                </View>
+              </Card>
+            )}
+
+            {/* Exercise list */}
+            {workout.exercises.length === 0 ? (
+              <View className="mt-12 items-center gap-4">
+                <Dumbbell size={56} color={textColor + '1A'} />
+                <Heading
+                  size="md"
+                  className="font-bold uppercase tracking-widest"
+                >
+                  No exercises yet
+                </Heading>
+                <Text className="text-center text-xs font-semibold uppercase tracking-widest opacity-40">
+                  Add your first exercise above
+                </Text>
+              </View>
+            ) : (
+              <View className="gap-4">
+                {workout.exercises.map(renderExercise)}
+                <WorkoutStats exercises={workout.exercises} />
+              </View>
+            )}
+          </View>
         </ScrollView>
       </ThemedView>
     </>

@@ -1,5 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
+
+import { Workout, WorkoutLog } from '@/types/workout';
 
 jest.mock('@/hooks/useColorScheme', () => ({
   useColorScheme: () => 'light',
@@ -14,7 +16,7 @@ jest.mock('expo-router', () => ({
   useRouter: () => ({ back: mockGoBack }),
 }));
 
-const mockWorkout = {
+const mockWorkout: Workout = {
   id: 'w1',
   name: 'Push Day',
   createdAt: new Date(),
@@ -24,7 +26,7 @@ const mockWorkout = {
   ],
 };
 
-const mockLog = {
+const mockLog: WorkoutLog = {
   id: 'w1',
   workout: mockWorkout,
   exercises: [],
@@ -32,23 +34,42 @@ const mockLog = {
 };
 const mockCompleteExercise = jest.fn();
 const mockCompleteSet = jest.fn();
-const mockGetLog = jest.fn(() => mockLog);
-const mockGetWorkoutById = jest.fn(() => mockWorkout);
+const mockGetLog = jest.fn((_id: string): WorkoutLog | undefined => mockLog);
+const mockGetWorkoutById = jest.fn(
+  (_id: string): Workout | undefined => mockWorkout,
+);
+const mockToastShow = jest.fn();
 
 jest.mock('@/hooks/useWorkouts', () => ({
   useWorkouts: () => ({ getWorkoutById: mockGetWorkoutById }),
 }));
-jest.mock('@/hooks/useWorkoutLogs', () => ({
-  useWorkoutLogs: () => ({
+jest.mock('@/hooks/useWorkoutRoutine', () => ({
+  useWorkoutRoutine: () => ({
     workoutLogs: {},
     getLog: mockGetLog,
     completeExercise: mockCompleteExercise,
     completeSet: mockCompleteSet,
   }),
 }));
+jest.mock('@/components/ui/toast', () => ({
+  useToast: () => ({
+    show: mockToastShow,
+  }),
+  Toast: ({ children }: { children: React.ReactNode }) => {
+    const { View } = require('react-native');
+    return <View>{children}</View>;
+  },
+  ToastTitle: ({ children }: { children: React.ReactNode }) => {
+    const { Text } = require('react-native');
+    return <Text>{children}</Text>;
+  },
+  ToastDescription: ({ children }: { children: React.ReactNode }) => {
+    const { Text } = require('react-native');
+    return <Text>{children}</Text>;
+  },
+}));
 
 // Import after mocks
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const WorkoutLogScreen = require('@/app/workout-log/[id]').default;
 
 function renderScreen() {
@@ -61,6 +82,7 @@ describe('WorkoutLogScreen', () => {
     mockCompleteSet.mockClear();
     mockGetLog.mockReturnValue(mockLog);
     mockGetWorkoutById.mockReturnValue(mockWorkout);
+    mockToastShow.mockClear();
   });
 
   it('shows exercise names', () => {
@@ -71,8 +93,36 @@ describe('WorkoutLogScreen', () => {
 
   it('shows workout stats with completion rate', () => {
     renderScreen();
-    expect(screen.getByText('Completion')).toBeTruthy();
     expect(screen.getByText('Volume')).toBeTruthy();
+  });
+
+  it('shows completion progress near the top of the workout log', () => {
+    renderScreen();
+    expect(screen.getByTestId('workout-completion-progress')).toBeTruthy();
+  });
+
+  it('shows 100% completion progress when workout was completed from home', () => {
+    mockGetLog.mockReturnValue({
+      ...mockLog,
+      completedAt: new Date(),
+      exercises: [
+        {
+          id: 'l1',
+          exercise: mockWorkout.exercises[0],
+          completedSets: 3,
+          completedAt: new Date(),
+        },
+        {
+          id: 'l2',
+          exercise: mockWorkout.exercises[1],
+          completedSets: 4,
+          completedAt: new Date(),
+        },
+      ],
+    });
+
+    renderScreen();
+    expect(screen.getByText('100')).toBeTruthy();
   });
 
   it('shows workout name in header', () => {
@@ -117,5 +167,28 @@ describe('WorkoutLogScreen', () => {
     mockGetWorkoutById.mockReturnValue({ ...mockWorkout, exercises: [] });
     renderScreen();
     expect(screen.getByText('No Exercises Yet')).toBeTruthy();
+  });
+
+  it('shows completion toast once when workout transitions to completed', () => {
+    const incompleteLog = { ...mockLog, completedAt: undefined };
+    const completedLog = { ...mockLog, completedAt: new Date() };
+
+    mockGetLog.mockReturnValueOnce(incompleteLog).mockReturnValue(completedLog);
+
+    const { rerender } = renderScreen();
+    rerender(<WorkoutLogScreen />);
+
+    expect(mockToastShow).toHaveBeenCalledTimes(1);
+    expect(mockToastShow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        placement: 'top',
+      }),
+    );
+  });
+
+  it('does not show completion toast on first render when already completed', () => {
+    mockGetLog.mockReturnValue({ ...mockLog, completedAt: new Date() });
+    renderScreen();
+    expect(mockToastShow).not.toHaveBeenCalled();
   });
 });

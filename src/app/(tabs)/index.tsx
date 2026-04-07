@@ -2,22 +2,25 @@ import { EmptyWorkout } from '@/components/EmptyWorkout';
 import { TabScreenLayout } from '@/components/TabScreenLayout';
 import { WorkoutProgressCard } from '@/components/WorkoutProgressCard';
 import { WorkoutQuote } from '@/components/WorkoutQuote';
+import { CircleCheck } from '@/components/icons';
 import RotateCcw from '@/components/icons/RotateCcw';
+import { Alert, AlertIcon, AlertText } from '@/components/ui/alert';
 import { Card } from '@/components/ui/card';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
-import { useWorkoutLogs } from '@/hooks/useWorkoutLogs';
+import { useWorkoutRoutine } from '@/hooks/useWorkoutRoutine';
 import { useWorkouts } from '@/hooks/useWorkouts';
 import { Workout, WorkoutLog } from '@/types/workout';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Alert, FlatList, Pressable, View } from 'react-native';
+import { FlatList, Pressable, Alert as RNAlert, View } from 'react-native';
 
 type NavRoute = '/(tabs)/index' | '/(tabs)/workouts';
 
 interface HomeViewProps {
   workouts: Workout[];
   workoutLogs: Record<string, WorkoutLog>;
+  todayCompletedWorkoutName: string | null;
   onAddWorkout: () => void;
   onWorkoutPress: (id: string) => void;
   onWorkoutCheck: (workout: Workout) => void;
@@ -28,6 +31,7 @@ interface HomeViewProps {
 function HomeView({
   workouts,
   workoutLogs,
+  todayCompletedWorkoutName,
   onAddWorkout,
   onWorkoutPress,
   onWorkoutCheck,
@@ -39,7 +43,7 @@ function HomeView({
   );
 
   const handleRestartRoutine = () => {
-    Alert.alert(
+    RNAlert.alert(
       'Reset Workout Logs',
       'Are you sure you want to reset all workout logs?',
       [
@@ -82,6 +86,19 @@ function HomeView({
             </View>
           </View>
 
+          {todayCompletedWorkoutName ? (
+            <Alert
+              testID="home-completion-banner"
+              action="success"
+              className="mb-4"
+            >
+              <AlertIcon as={CircleCheck} />
+              <AlertText className="flex-1 shrink text-sm font-semibold">
+                {`Congratulations! You completed ${todayCompletedWorkoutName} today.`}
+              </AlertText>
+            </Alert>
+          ) : null}
+
           <FlatList
             data={workouts}
             renderItem={renderWorkoutItem}
@@ -103,17 +120,53 @@ function HomeView({
   );
 }
 
+function startOfDay(date: Date): number {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  ).getTime();
+}
+
+function getTodayCompletedWorkoutName(
+  workoutLogs: Record<string, WorkoutLog>,
+): string | null {
+  const todayStart = startOfDay(new Date());
+  const tomorrowStart = todayStart + 24 * 60 * 60 * 1000;
+
+  let latestCompletedAt = 0;
+  let latestWorkoutName: string | null = null;
+
+  for (const log of Object.values(workoutLogs)) {
+    if (!log.completedAt || !log.workout?.name) {
+      continue;
+    }
+
+    const completedAt = log.completedAt.getTime();
+    const isCompletedToday =
+      completedAt >= todayStart && completedAt < tomorrowStart;
+
+    if (isCompletedToday && completedAt >= latestCompletedAt) {
+      latestCompletedAt = completedAt;
+      latestWorkoutName = log.workout.name;
+    }
+  }
+
+  return latestWorkoutName;
+}
+
 function withHome(Component: typeof HomeView) {
   return function HomeContainer() {
     const { workouts } = useWorkouts();
     const { workoutLogs, toggleWorkoutComplete, restartRoutine } =
-      useWorkoutLogs();
+      useWorkoutRoutine();
     const router = useRouter();
 
     return (
       <Component
         workouts={workouts}
         workoutLogs={workoutLogs}
+        todayCompletedWorkoutName={getTodayCompletedWorkoutName(workoutLogs)}
         onAddWorkout={() => router.navigate('/(tabs)/workouts')}
         onWorkoutPress={(id) => router.push(`/workout-log/${id}`)}
         onWorkoutCheck={(workout) => toggleWorkoutComplete(workout)}
