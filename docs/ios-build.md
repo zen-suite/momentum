@@ -70,3 +70,6 @@ Then it runs:
 1. Signing error: open `ios/Momentum.xcworkspace` in Xcode, set Team for target `Momentum`, then run build again.
 2. Device install fails: make sure iPhone is unlocked, trusted, and Developer Mode is enabled.
 3. `main.jsbundle` missing: re-run the script and confirm Step 2 (`xcodebuild`) completed successfully.
+4. `PhaseScriptExecution Bundle React Native code and images` with `EPERM ... main.jsbundle`: this is usually caused by `ENABLE_USER_SCRIPT_SANDBOXING = YES` in the app target. The script now auto-patches `ios/Momentum.xcodeproj/project.pbxproj` to set it to `NO` after `expo prebuild`.
+5. Notes such as `Run script build phase ... will be run during every build` and warnings about `IPHONEOS_DEPLOYMENT_TARGET` from `Pods.xcodeproj` are not fatal by themselves.
+6. If Step 2 fails with provisioning errors mentioning `Push Notifications capability` or `aps-environment entitlement` on a personal team, the script automatically removes `aps-environment` from `ios/Momentum/Momentum.entitlements` and retries once.
