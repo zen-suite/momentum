@@ -55,6 +55,8 @@ export interface SettingsViewProps {
   notificationEnabled: boolean;
   notificationWorkoutDays: number;
   notificationBreakDays: number;
+  notificationTimeHour: number;
+  notificationTimeMinute: number;
   notificationTimeLabel: string;
   notificationPermissionState: NotificationPermissionState;
   hasWorkouts: boolean;
@@ -66,9 +68,8 @@ export interface SettingsViewProps {
   onToggleNotifications: () => void;
   onNotificationWorkoutDaysChange: (value: number) => void;
   onNotificationBreakDaysChange: (value: number) => void;
-  onNotificationTimePress: () => void;
+  onNotificationTimeChange: (hour: number, minute: number) => void;
   onOpenNotificationSettings: () => void;
-  notificationTimePicker?: React.ReactNode;
 }
 
 export function SettingsView({
@@ -79,6 +80,8 @@ export function SettingsView({
   notificationEnabled,
   notificationWorkoutDays,
   notificationBreakDays,
+  notificationTimeHour,
+  notificationTimeMinute,
   notificationTimeLabel,
   notificationPermissionState,
   hasWorkouts,
@@ -90,12 +93,30 @@ export function SettingsView({
   onToggleNotifications,
   onNotificationWorkoutDaysChange,
   onNotificationBreakDaysChange,
-  onNotificationTimePress,
+  onNotificationTimeChange,
   onOpenNotificationSettings,
-  notificationTimePicker,
 }: SettingsViewProps) {
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const showPermissionWarning = notificationPermissionState === 'denied';
   const showEmptyWorkoutState = !hasWorkouts;
+
+  const handleTimeChange = (
+    event: DateTimePickerEvent,
+    selectedDate?: Date,
+  ) => {
+    if (Platform.OS === 'android') {
+      setShowTimePicker(false);
+    }
+
+    if (event.type === 'dismissed' || !selectedDate) {
+      return;
+    }
+
+    onNotificationTimeChange(
+      selectedDate.getHours(),
+      selectedDate.getMinutes(),
+    );
+  };
 
   return (
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
@@ -285,7 +306,7 @@ export function SettingsView({
 
             <Pressable
               testID="notification-time-button"
-              onPress={onNotificationTimePress}
+              onPress={() => setShowTimePicker(true)}
               className="rounded-[28px] bg-background-50 px-5 py-5"
             >
               <Text className="text-[11px] font-bold uppercase tracking-[0.32em] opacity-45">
@@ -301,7 +322,25 @@ export function SettingsView({
               </View>
             </Pressable>
 
-            {!showEmptyWorkoutState ? notificationTimePicker : null}
+            {!showEmptyWorkoutState && showTimePicker ? (
+              <View className="overflow-hidden rounded-[28px] bg-background-50 px-2 py-2">
+                <DateTimePicker
+                  testID="notification-time-picker"
+                  value={
+                    new Date(
+                      2026,
+                      0,
+                      1,
+                      notificationTimeHour,
+                      notificationTimeMinute,
+                    )
+                  }
+                  mode="time"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={handleTimeChange}
+                />
+              </View>
+            ) : null}
 
             {showPermissionWarning ? (
               <SettingsStatusCallout
@@ -351,7 +390,6 @@ export function withSettings(Component: typeof SettingsView) {
     } = useSettings();
     const { workouts } = useWorkouts();
     const { history } = useWorkoutHistory();
-    const [showTimePicker, setShowTimePicker] = useState(false);
     const [permissionState, setPermissionState] =
       useState<NotificationPermissionState>('unknown');
 
@@ -440,24 +478,6 @@ export function withSettings(Component: typeof SettingsView) {
       setNotificationsEnabled(true);
     };
 
-    const handleTimeChange = (
-      event: DateTimePickerEvent,
-      selectedDate?: Date,
-    ) => {
-      if (Platform.OS === 'android') {
-        setShowTimePicker(false);
-      }
-
-      if (event.type === 'dismissed' || !selectedDate) {
-        return;
-      }
-
-      updateNotificationSettings({
-        sendHour: selectedDate.getHours(),
-        sendMinute: selectedDate.getMinutes(),
-      });
-    };
-
     return (
       <Component
         theme={settings.theme}
@@ -467,6 +487,8 @@ export function withSettings(Component: typeof SettingsView) {
         notificationEnabled={settings.notifications.enabled}
         notificationWorkoutDays={settings.notifications.workoutDays}
         notificationBreakDays={settings.notifications.breakDays}
+        notificationTimeHour={settings.notifications.sendHour}
+        notificationTimeMinute={settings.notifications.sendMinute}
         notificationTimeLabel={formatReminderTime(
           settings.notifications.sendHour,
           settings.notifications.sendMinute,
@@ -493,30 +515,15 @@ export function withSettings(Component: typeof SettingsView) {
             patternAnchorDate: getLocalDateKey(new Date()),
           })
         }
-        onNotificationTimePress={() => setShowTimePicker(true)}
+        onNotificationTimeChange={(hour, minute) =>
+          updateNotificationSettings({
+            sendHour: hour,
+            sendMinute: minute,
+          })
+        }
         onOpenNotificationSettings={() => {
           void openWorkoutReminderSettingsAsync();
         }}
-        notificationTimePicker={
-          showTimePicker ? (
-            <View className="overflow-hidden rounded-[28px] bg-background-50 px-2 py-2 dark:bg-background-900">
-              <DateTimePicker
-                value={
-                  new Date(
-                    2026,
-                    0,
-                    1,
-                    settings.notifications.sendHour,
-                    settings.notifications.sendMinute,
-                  )
-                }
-                mode="time"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={handleTimeChange}
-              />
-            </View>
-          ) : null
-        }
       />
     );
   };

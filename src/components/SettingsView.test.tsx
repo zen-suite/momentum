@@ -18,6 +18,8 @@ const defaultProps = {
   notificationEnabled: false,
   notificationWorkoutDays: 3,
   notificationBreakDays: 1,
+  notificationTimeHour: 19,
+  notificationTimeMinute: 0,
   notificationTimeLabel: '7:00 PM',
   notificationPermissionState: 'granted' as const,
   hasWorkouts: true,
@@ -30,7 +32,7 @@ const defaultProps = {
   onToggleNotifications: jest.fn(),
   onNotificationWorkoutDaysChange: jest.fn(),
   onNotificationBreakDaysChange: jest.fn(),
-  onNotificationTimePress: jest.fn(),
+  onNotificationTimeChange: jest.fn(),
   onOpenNotificationSettings: jest.fn(),
 };
 
@@ -78,7 +80,7 @@ describe('SettingsView', () => {
 
   it('calls notification handlers from the cadence controls', () => {
     const onToggleNotifications = jest.fn();
-    const onNotificationTimePress = jest.fn();
+    const onNotificationTimeChange = jest.fn();
     const onWorkoutDaysChange = jest.fn();
     const onBreakDaysChange = jest.fn();
 
@@ -86,7 +88,7 @@ describe('SettingsView', () => {
       <SettingsView
         {...defaultProps}
         onToggleNotifications={onToggleNotifications}
-        onNotificationTimePress={onNotificationTimePress}
+        onNotificationTimeChange={onNotificationTimeChange}
         onNotificationWorkoutDaysChange={onWorkoutDaysChange}
         onNotificationBreakDaysChange={onBreakDaysChange}
       />,
@@ -94,11 +96,17 @@ describe('SettingsView', () => {
 
     fireEvent(screen.getByTestId('notification-toggle'), 'valueChange', true);
     fireEvent.press(screen.getByTestId('notification-time-button'));
+    fireEvent(
+      screen.getByTestId('notification-time-picker'),
+      'onChange',
+      { type: 'set' },
+      new Date(2026, 0, 1, 21, 30),
+    );
     fireEvent.press(screen.getAllByLabelText('Increase value')[0]);
     fireEvent.press(screen.getAllByLabelText('Increase value')[1]);
 
     expect(onToggleNotifications).toHaveBeenCalledTimes(1);
-    expect(onNotificationTimePress).toHaveBeenCalledTimes(1);
+    expect(onNotificationTimeChange).toHaveBeenCalledWith(21, 30);
     expect(onWorkoutDaysChange).toHaveBeenCalledWith(4);
     expect(onBreakDaysChange).toHaveBeenCalledWith(2);
   });
